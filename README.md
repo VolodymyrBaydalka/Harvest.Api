@@ -1,3 +1,5 @@
+[![zv MyGet Build Status](https://www.myget.org/BuildSource/Badge/zv?identifier=3b4888a9-f4db-434e-baac-7b3518d0f7af)](https://www.myget.org/)
+
 # Harvest.Api
 
 A .Net client for the [Harvest API v2][0].
