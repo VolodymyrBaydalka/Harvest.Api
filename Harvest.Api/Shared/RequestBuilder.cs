@@ -3,13 +3,11 @@ using Newtonsoft.Json.Linq;
 using Newtonsoft.Json.Serialization;
 using System;
 using System.Collections.Generic;
-using System.Collections.Specialized;
 using System.IO;
 using System.Net.Http;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Web;
 
 namespace Harvest.Api
 {
@@ -318,7 +316,7 @@ namespace Harvest.Api
                     builder.Append("&");
 
                 if(item.Value != null)
-                    builder.Append(HttpUtility.UrlEncode(item.Key)).Append("=").Append(HttpUtility.UrlEncode(item.Value));
+                    builder.Append(Uri.EscapeDataString(item.Key)).Append("=").Append(Uri.EscapeDataString(item.Value));
             }
 
             return builder.ToString();

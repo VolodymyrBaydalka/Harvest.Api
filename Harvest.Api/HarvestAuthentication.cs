@@ -1,14 +1,11 @@
-﻿using Newtonsoft.Json;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.Collections.Specialized;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Security.Cryptography;
-using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
-using System.Web;
+using System.Linq;
 
 namespace Harvest.Api
 {
@@ -25,12 +22,12 @@ namespace Harvest.Api
 
         public async Task<HarvestClient> HandleCallback(Uri callbackUri)
         {
-            var query = HttpUtility.ParseQueryString(callbackUri.Query);
-            var code = query["code"];
-            var accessToken = query["access_token"];
-            var tokenType = query["token_type"];
-            var scope = query["scope"];
-            var state = query["state"];
+            var queryParams = ParseQueryString(callbackUri.GetComponents(UriComponents.Query, UriFormat.UriEscaped));
+            var code = queryParams["code"];
+            var accessToken = queryParams["access_token"];
+            var tokenType = queryParams["token_type"];
+            var scope = queryParams["scope"];
+            var state = queryParams["state"];
 
             if (state != this.State)
                 throw new InvalidOperationException("Login states doesn't match");
@@ -108,6 +105,12 @@ namespace Harvest.Api
             }
 
             return result.ToArray();
+        }
+
+        private Dictionary<string, string> ParseQueryString(String query)
+        {
+            return query.Split('&').Select(x => x.Split('='))
+                .ToDictionary(x => Uri.UnescapeDataString(x[0]), y => y.Length > 1 ? Uri.UnescapeDataString(y[1]) : null);
         }
 
         private static string GenerateState()
