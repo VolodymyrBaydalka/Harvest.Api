@@ -23,16 +23,15 @@ namespace Harvest.Api
         public async Task<HarvestClient> HandleCallback(Uri callbackUri)
         {
             var queryParams = ParseQueryString(callbackUri.GetComponents(UriComponents.Query, UriFormat.UriEscaped));
-            var code = queryParams["code"];
-            var accessToken = queryParams["access_token"];
-            var tokenType = queryParams["token_type"];
-            var scope = queryParams["scope"];
-            var state = queryParams["state"];
 
-            if (state != this.State)
+            if (!queryParams.TryGetValue("state", out var state) ||  state != this.State)
                 throw new InvalidOperationException("Login states doesn't match");
 
-            if (string.IsNullOrEmpty(accessToken))
+            queryParams.TryGetValue("code", out var code);
+            queryParams.TryGetValue("scope", out var scope);
+            queryParams.TryGetValue("token_type", out var tokenType);
+
+            if (!queryParams.TryGetValue("access_token", out var accessToken))
             {
                 using (var httpClient = new HttpClient())
                 {
