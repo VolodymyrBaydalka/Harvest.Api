@@ -47,10 +47,7 @@ namespace Harvest.Api
         public Task<TimeEntriesResponse> GetTimeEntriesAsync(long? userId = null, long? clientId = null, long? projectId = null, bool? isBilled = null,
             DateTime? updatedSince = null, DateTime? fromDate = null, DateTime? toDate = null, int? page = null, int? perPage = null, long? accountId = null, CancellationToken cancellationToken = default(CancellationToken))
         {
-            return _requestBuilder
-                .Begin("https://api.harvestapp.com/v2/time_entries")
-                .AccountId(accountId ?? this.DefaultAccountId)
-                .UserAgent(this.UserAgent)
+            return SimpleRequestBuilder("https://api.harvestapp.com/v2/time_entries", accountId)
                 .Query("user_id", userId)
                 .Query("client_id", clientId)
                 .Query("project_id", projectId)
@@ -65,37 +62,25 @@ namespace Harvest.Api
 
         public Task<TimeEntry> GetTimeEntryAsync(long entryId, long? accountId = null, CancellationToken cancellationToken = default(CancellationToken))
         {
-            return _requestBuilder
-                .Begin($"https://api.harvestapp.com/v2/time_entries/{entryId}")
-                .AccountId(accountId ?? this.DefaultAccountId)
-                .UserAgent(this.UserAgent)
+            return SimpleRequestBuilder($"https://api.harvestapp.com/v2/time_entries/{entryId}", accountId)
                 .SendAsync<TimeEntry>(_client, cancellationToken);
         }
 
         public Task<TimeEntry> RestartTimeEntryAsync(long entryId, long? accountId = null, CancellationToken cancellationToken = default(CancellationToken))
         {
-            return _requestBuilder
-                .Begin(RequestBuilder.PatchMethod, $"https://api.harvestapp.com/v2/time_entries/{entryId}/restart")
-                .AccountId(accountId ?? this.DefaultAccountId)
-                .UserAgent(this.UserAgent)
+            return SimpleRequestBuilder($"https://api.harvestapp.com/v2/time_entries/{entryId}/restart", accountId, RequestBuilder.PatchMethod)
                 .SendAsync<TimeEntry>(_client, cancellationToken);
         }
 
         public Task<TimeEntry> StopTimeEntryAsync(long entryId, long? accountId = null, CancellationToken cancellationToken = default(CancellationToken))
         {
-            return _requestBuilder
-                .Begin(RequestBuilder.PatchMethod, $"https://api.harvestapp.com/v2/time_entries/{entryId}/stop")
-                .AccountId(accountId ?? this.DefaultAccountId)
-                .UserAgent(this.UserAgent)
+            return SimpleRequestBuilder($"https://api.harvestapp.com/v2/time_entries/{entryId}/stop", accountId, RequestBuilder.PatchMethod)
                 .SendAsync<TimeEntry>(_client, cancellationToken);
         }
 
         public System.Threading.Tasks.Task DeleteTimeEntryAsync(long entryId, long? accountId = null, CancellationToken cancellationToken = default(CancellationToken))
         {
-            return _requestBuilder
-                .Begin(HttpMethod.Delete, $"https://api.harvestapp.com/v2/time_entries/{entryId}")
-                .AccountId(accountId ?? this.DefaultAccountId)
-                .UserAgent(this.UserAgent)
+            return SimpleRequestBuilder($"https://api.harvestapp.com/v2/time_entries/{entryId}", accountId, HttpMethod.Delete)
                 .SendAsync(_client, cancellationToken);
         }
 
@@ -103,10 +88,7 @@ namespace Harvest.Api
             TimeSpan? startedTime = null, TimeSpan? endedTime = null, decimal? hours = null, string notes = null, ExternalReference externalReference = null,
             long? accountId = null, CancellationToken cancellationToken = default(CancellationToken))
         {
-            return _requestBuilder
-                .Begin(HttpMethod.Post, $"https://api.harvestapp.com/v2/time_entries")
-                .AccountId(accountId ?? this.DefaultAccountId)
-                .UserAgent(this.UserAgent)
+            return SimpleRequestBuilder($"https://api.harvestapp.com/v2/time_entries", accountId, HttpMethod.Post)
                 .Form("project_id", projectId)
                 .Form("task_id", taskId)
                 .Form("spent_date", spentDate)
@@ -123,10 +105,7 @@ namespace Harvest.Api
             decimal? hours = null, string notes = null, ExternalReference externalReference = null,
             long? accountId = null, CancellationToken cancellationToken = default(CancellationToken))
         {
-            return _requestBuilder
-                .Begin(RequestBuilder.PatchMethod, $"https://api.harvestapp.com/v2/time_entries/{entryId}")
-                .AccountId(accountId ?? this.DefaultAccountId)
-                .UserAgent(this.UserAgent)
+            return SimpleRequestBuilder($"https://api.harvestapp.com/v2/time_entries/{entryId}", accountId, RequestBuilder.PatchMethod)
                 .Form("project_id", projectId)
                 .Form("task_id", taskId)
                 .Form("spent_date", spentDate)
@@ -142,10 +121,7 @@ namespace Harvest.Api
         {
             var userIdOrMe = userId.HasValue ? userId.ToString() : "me";
 
-            return _requestBuilder
-                .Begin($"https://api.harvestapp.com/v2/users/{userIdOrMe}/project_assignments")
-                .AccountId(accountId ?? this.DefaultAccountId)
-                .UserAgent(this.UserAgent)
+            return SimpleRequestBuilder($"https://api.harvestapp.com/v2/users/{userIdOrMe}/project_assignments", accountId)
                 .Query("updated_since", updatedSince)
                 .Query("page", page)
                 .Query("per_page", perPage)
@@ -154,10 +130,7 @@ namespace Harvest.Api
 
         public Task<ProjectsResponse> GetProjectsAsync(long? clientId = null, DateTime? updatedSince = null, int? page = null, int? perPage = null, long? accountId = null)
         {
-            return _requestBuilder
-                .Begin("https://api.harvestapp.com/v2/projects")
-                .AccountId(accountId ?? this.DefaultAccountId)
-                .UserAgent(this.UserAgent)
+            return SimpleRequestBuilder("https://api.harvestapp.com/v2/projects", accountId)
                 .Query("client_id", clientId)
                 .Query("updated_since", updatedSince)
                 .Query("page", page)
@@ -167,10 +140,7 @@ namespace Harvest.Api
 
         public Task<TasksResponse> GetTasksAsync(DateTime? updatedSince = null, int? page = null, int? perPage = null, long? accountId = null)
         {
-            return _requestBuilder
-                .Begin("https://api.harvestapp.com/v2/tasks")
-                .AccountId(accountId ?? this.DefaultAccountId)
-                .UserAgent(this.UserAgent)
+            return SimpleRequestBuilder("https://api.harvestapp.com/v2/tasks", accountId)
                 .Query("updated_since", updatedSince)
                 .Query("page", page)
                 .Query("per_page", perPage)
@@ -179,6 +149,20 @@ namespace Harvest.Api
         #endregion
 
         #region Implementation
+
+        private RequestBuilder SimpleRequestBuilder(string url, long? accountId, HttpMethod httpMethod = null)
+        {
+            if (accountId == null && this.DefaultAccountId == null)
+                throw new HarvestException("accountId or DefaultAccountId should be specified");
+
+            if (string.IsNullOrEmpty(this.UserAgent))
+                throw new HarvestException("UserAgent should be specified");
+
+            return  _requestBuilder.Begin(httpMethod ?? HttpMethod.Get, url)
+                .AccountId(accountId ?? this.DefaultAccountId)
+                .UserAgent(this.UserAgent);
+        }
+
         public void Dispose()
         {
             _client.Dispose();
