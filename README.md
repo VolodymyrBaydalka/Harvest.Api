@@ -4,6 +4,15 @@
 
 A .Net client for the [Harvest API v2][0].
 
+Installation
+------------
+
+This library is hosted as a [nuget package][1].
+
+To install Harvest.Net, run the following command in the Package Manager Console
+
+    PM> Install-Package Harvest.Api
+    
 Usage
 -----
 Create a client object:
@@ -31,5 +40,9 @@ Use authorization helper for OAuth2 Authorization
     // you can use helper to parse redirect url 
     var client = await auth.HandleCallback(callbackUri);
     
+# Current State
+
+Library contains all API I needed. Everything else will be added someday.
 
 [0]:https://help.getharvest.com/api-v2/
+[1]:https://www.nuget.org/packages/Harvest.Api/
