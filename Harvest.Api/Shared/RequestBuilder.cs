@@ -285,7 +285,14 @@ namespace Harvest.Api
 
             var resp = await httpClient.SendAsync(request, token);
 
-            resp.EnsureSuccessStatusCode();
+            try
+            {
+                resp.EnsureSuccessStatusCode();
+            }
+            catch (HttpRequestException)
+            {
+                throw new HttpHarvestException(resp.ReasonPhrase) { StatusCode = resp.StatusCode };
+            }
 
             if (readRespose)
                 return await resp.Content.ReadAsStreamAsync();
