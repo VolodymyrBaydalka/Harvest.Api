@@ -20,15 +20,14 @@ namespace Harvest.Api
         public Uri RedirectUri { get; set; }
         private string State { get; set; }
 
-        public async Task<HarvestClient> HandleCallback(Uri callbackUri)
+        public async Task<string> GetAccessTokenAsync(Uri callbackUri)
         {
             var queryParams = ParseQueryString(callbackUri.GetComponents(UriComponents.Query, UriFormat.UriEscaped));
 
-            if (!queryParams.TryGetValue("state", out var state) ||  state != this.State)
+            if (!queryParams.TryGetValue("state", out var state) || state != this.State)
                 throw new InvalidOperationException("Login states doesn't match");
 
             queryParams.TryGetValue("code", out var code);
-            queryParams.TryGetValue("scope", out var scope);
             queryParams.TryGetValue("token_type", out var tokenType);
 
             if (!queryParams.TryGetValue("access_token", out var accessToken))
@@ -53,11 +52,24 @@ namespace Harvest.Api
                 }
             }
 
-            var harvestScopes = ParseHarvestScopes(scope);
+            return accessToken;
+        }
+
+        public string[] GetScopes(Uri callbackUri)
+        {
+            var queryParams = ParseQueryString(callbackUri.GetComponents(UriComponents.Query, UriFormat.UriEscaped));
+            queryParams.TryGetValue("scope", out var scope);
+            return ParseHarvestScopes(scope);
+        }
+
+        public async Task<HarvestClient> CreateClientAsync(Uri callbackUri)
+        {
+            var accessToken = await GetAccessTokenAsync(callbackUri);
+            var scopes = GetScopes(callbackUri);
 
             return new HarvestClient(accessToken)
             {
-                DefaultAccountId = DefaultAccountId(harvestScopes),
+                DefaultAccountId = DefaultAccountId(scopes),
                 UserAgent = this.UserAgent
             };
         }
@@ -85,7 +97,6 @@ namespace Harvest.Api
 
         private static long? DefaultAccountId(string[] scopes)
         {
-
             if (scopes != null && scopes.Length == 1 && long.TryParse(scopes[0], out long result))
                 return result;
 
@@ -106,7 +117,7 @@ namespace Harvest.Api
             return result.ToArray();
         }
 
-        private Dictionary<string, string> ParseQueryString(String query)
+        private static Dictionary<string, string> ParseQueryString(String query)
         {
             return query.Split('&').Select(x => x.Split('='))
                 .ToDictionary(x => Uri.UnescapeDataString(x[0]), y => y.Length > 1 ? Uri.UnescapeDataString(y[1]) : null);

@@ -38,7 +38,7 @@ Use authorization helper for OAuth2 Authorization
     // open url via web browser component for WPF, Windows Forms application or redirect to this url for asp.net application
 
     // you can use helper to parse redirect url 
-    var client = await auth.HandleCallback(callbackUri);
+    var client = await auth.CreateClientAsync(callbackUri);
     
 # Current State
 
