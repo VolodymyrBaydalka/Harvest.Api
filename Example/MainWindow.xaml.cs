@@ -22,39 +22,44 @@ namespace Example
     /// </summary>
     public partial class MainWindow : Window
     {
+        HarvestClient client;
+
         public MainWindow()
         {
             InitializeComponent();
 
-            var auth = new HarvestAuthentication
+
+            client = new HarvestClient("HavestApiClient")
             {
-                RedirectUri = new Uri("<RedirectUri>"),
-                ClientId = "<ClientId>", // TODO
-                ClientSecret = "<ClientSecret>", // TODO
-                UserAgent = "HavestApiClient" // TODO
+                ClientId = "<ClientId>",
+                ClientSecret = "<ClientSecret>",
+                RedirectUri = new Uri("http://redirect/url"),
             };
 
-            webBrowser.Source = auth.BuildUrl();
+            webBrowser.Source = client.BuildAuthorizationUrl();
             webBrowser.Navigating += async (s, e) =>
             {
-                if (auth.IsRedirectUri(e.Uri))
+                if (client.IsRedirectUri(e.Uri))
                 {
                     e.Cancel = true;
 
                     try
                     {
-                        var client = await auth.HandleCallback(e.Uri);
+                        await client.AuthorizeAsync(e.Uri);
                         await ApiSample(client);
                     }
                     catch
                     {
-                        webBrowser.Source = auth.BuildUrl();
+                        webBrowser.Source = client.BuildAuthorizationUrl();
                     }
                 }
             };
         }
 
         public async System.Threading.Tasks.Task ApiSample(HarvestClient harvestClient) {
+
+            await harvestClient.RefreshTokenAsync();
+
             var proj = await harvestClient.GetProjectAssignmentsAsync();
 
             Debugger.Break();
