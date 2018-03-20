@@ -48,25 +48,16 @@ namespace Harvest.Api
             _httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue(RequestBuilder.JsonMimeType));
             _httpClient.DefaultRequestHeaders.Add("User-Agent", this.UserAgent);
         }
+        #endregion
 
-        public HarvestClient(string userAgent, string accessToken, string refreshToken = null, long expiresIn = 0, HttpClientHandler httpClientHandler = null)
-            : this(userAgent, httpClientHandler)
+        #region Methods
+        public static HarvestClient FromAccessToken(string userAgent, string accessToken, string refreshToken = null, long expiresIn = 0, HttpClientHandler httpClientHandler = null)
         {
-            OnAuthorize(new AuthResponse { AccessToken = accessToken, RefreshToken = refreshToken, ExpiresIn = 0 });
-        }
+            var client = new HarvestClient(userAgent, httpClientHandler);
 
-        public HarvestClient(string userAgent, string clientId, string clientSecret, Uri redirectUri = null, HttpClientHandler httpClientHandler = null)
-            : this(userAgent, httpClientHandler)
-        {
-            if(string.IsNullOrEmpty(clientId))
-                throw new ArgumentNullException(nameof(clientId));
+            client.Authorize(accessToken, refreshToken, expiresIn);
 
-            if (string.IsNullOrEmpty(clientSecret))
-                throw new ArgumentNullException(nameof(clientSecret));
-
-            this.ClientId = clientId;
-            this.ClientSecret = clientSecret;
-            this.RedirectUri = redirectUri;
+            return client;
         }
         #endregion
 
@@ -123,13 +114,13 @@ namespace Harvest.Api
             if (result == null)
                 throw new ArgumentException(nameof(callbackUri));
 
+            Authorize(result.AccessToken, result.RefreshToken, result.ExpiresIn);
+
             query.TryGetValue("scope", out var scope);
             result.Scope = scope;
 
             if (defaultAccountId)
                 this.DefaultAccountId = Utilities.FirstHarvestAccountId(scope);
-
-            OnAuthorize(result);
 
             return result;
         }
@@ -147,18 +138,21 @@ namespace Harvest.Api
                 .Form("refresh_token", this.RefreshToken)
                 .SendAsync<AuthResponse>(_httpClient);
 
-            OnAuthorize(result);
+            Authorize(result.AccessToken, result.RefreshToken, result.ExpiresIn);
 
             return result;
         }
 
-        private void OnAuthorize(AuthResponse auth)
+        public void Authorize(string accessToken, string refreshToken = null, long expiresIn = 0)
         {
-            this.AccessToken = auth.AccessToken;
-            this.RefreshToken = auth.RefreshToken;
-            this.ExpireAt = DateTime.Now.AddSeconds(auth.ExpiresIn);
+            if (string.IsNullOrEmpty(accessToken))
+                throw new ArgumentException(nameof(accessToken));
 
-            _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(tokenType, auth.AccessToken);
+            this.AccessToken = accessToken;
+            this.RefreshToken = refreshToken;
+            this.ExpireAt = DateTime.Now.AddSeconds(expiresIn);
+
+            _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(tokenType, accessToken);
 
             this.TokenRefreshed?.Invoke(this, EventArgs.Empty);
         }
@@ -301,7 +295,7 @@ namespace Harvest.Api
         #region Implementation
         private async System.Threading.Tasks.Task RefreshTokenIsNeeded()
         {
-            if (this.ExpireAt <= DateTime.Now && string.IsNullOrEmpty(this.RefreshToken))
+            if (this.ExpireAt <= DateTime.Now && !string.IsNullOrEmpty(this.RefreshToken))
                 await RefreshTokenAsync();
         }
 
