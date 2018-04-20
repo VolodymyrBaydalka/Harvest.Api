@@ -258,7 +258,8 @@ namespace Harvest.Api
                 .SendAsync<TimeEntry>(_httpClient, cancellationToken);
         }
 
-        public async Task<ProjectAssignmentsResponse> GetProjectAssignmentsAsync(long? userId = null, DateTime? updatedSince = null, int? page = null, int? perPage = null, long? accountId = null)
+        public async Task<ProjectAssignmentsResponse> GetProjectAssignmentsAsync(long? userId = null, DateTime? updatedSince = null, int? page = null, int? perPage = null, 
+            long? accountId = null, CancellationToken cancellationToken = default(CancellationToken))
         {
             await RefreshTokenIsNeeded();
             var userIdOrMe = userId.HasValue ? userId.ToString() : "me";
@@ -267,10 +268,11 @@ namespace Harvest.Api
                 .Query("updated_since", updatedSince)
                 .Query("page", page)
                 .Query("per_page", perPage)
-                .SendAsync<ProjectAssignmentsResponse>(_httpClient, CancellationToken.None);
+                .SendAsync<ProjectAssignmentsResponse>(_httpClient, cancellationToken);
         }
 
-        public async Task<ProjectsResponse> GetProjectsAsync(long? clientId = null, DateTime? updatedSince = null, int? page = null, int? perPage = null, long? accountId = null)
+        public async Task<ProjectsResponse> GetProjectsAsync(long? clientId = null, DateTime? updatedSince = null, int? page = null, int? perPage = null, 
+            long? accountId = null, CancellationToken cancellationToken = default(CancellationToken))
         {
             await RefreshTokenIsNeeded();
             return await SimpleRequestBuilder("https://api.harvestapp.com/v2/projects", accountId)
@@ -278,17 +280,18 @@ namespace Harvest.Api
                 .Query("updated_since", updatedSince)
                 .Query("page", page)
                 .Query("per_page", perPage)
-                .SendAsync<ProjectsResponse>(_httpClient, CancellationToken.None);
+                .SendAsync<ProjectsResponse>(_httpClient, cancellationToken);
         }
 
-        public async Task<TasksResponse> GetTasksAsync(DateTime? updatedSince = null, int? page = null, int? perPage = null, long? accountId = null)
+        public async Task<TasksResponse> GetTasksAsync(DateTime? updatedSince = null, int? page = null, int? perPage = null, 
+            long? accountId = null, CancellationToken cancellationToken = default(CancellationToken))
         {
             await RefreshTokenIsNeeded();
             return await SimpleRequestBuilder("https://api.harvestapp.com/v2/tasks", accountId)
                 .Query("updated_since", updatedSince)
                 .Query("page", page)
                 .Query("per_page", perPage)
-                .SendAsync<TasksResponse>(_httpClient, CancellationToken.None);
+                .SendAsync<TasksResponse>(_httpClient, cancellationToken);
         }
         #endregion
 

@@ -25,20 +25,19 @@ Call API methods
     
 Use authorization helper for OAuth2 Authorization
     
-    var auth = new HarvestAuthentication
+    var client = new HarvestClient("HavestApiClient")
     {
-        RedirectUri = new Uri("<RedirectUri>"),
-        ClientId = "<ClientId>", // TODO
-        ClientSecret = "<ClientSecret>", // TODO
-        UserAgent = "HavestApiClient" // TODO
+        ClientId = "<ClientId>",
+        ClientSecret = "<ClientSecret>",
+        RedirectUri = new Uri("http://redirect/url"),
     };
     
-    var authUrl = auth.BuildUrl();
+    var authUrl = auth.BuildAuthorizationUrl();
     
     // open url via web browser component for WPF, Windows Forms application or redirect to this url for asp.net application
 
     // you can use helper to parse redirect url 
-    var client = await auth.CreateClientAsync(callbackUri);
+    var client = await client.AuthorizeAsync(callbackUri);
     
 # Current State
 
