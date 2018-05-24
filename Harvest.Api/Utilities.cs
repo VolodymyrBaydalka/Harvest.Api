@@ -7,11 +7,11 @@ using System.Text.RegularExpressions;
 
 namespace Harvest.Api
 {
-    class Utilities
+    public class Utilities
     {
         private static Regex scopeRegex = new Regex("harvest:(?<harvestid>[^ ]*)");
 
-        public static Dictionary<string, string> ParseQueryString(String query)
+        internal static Dictionary<string, string> ParseQueryString(String query)
         {
             return query.Split('&').Select(x => x.Split('='))
                 .ToDictionary(x => Uri.UnescapeDataString(x[0]), y => y.Length > 1 ? Uri.UnescapeDataString(y[1]) : null);

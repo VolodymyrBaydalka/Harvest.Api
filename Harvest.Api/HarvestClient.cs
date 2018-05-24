@@ -11,13 +11,14 @@ namespace Harvest.Api
     public class HarvestClient : IDisposable
     {
         #region Constants
-        private string tokenType = "Bearer";
+        private const string tokenType = "Bearer";
+        private const string harvestIdUrl = "https://id.getharvest.com";
+        private const string harvestApiUrl = "https://api.harvestapp.com/v2";
         #endregion
 
         #region Members
         private HttpClient _httpClient;
         private RequestBuilder _requestBuilder = new RequestBuilder();
-        private string _authState;
         #endregion
 
         #region Properties
@@ -25,6 +26,7 @@ namespace Harvest.Api
         public string AccessToken { get; private set; }
         public string RefreshToken { get; private set; }
         public DateTime ExpireAt { get; private set; }
+        public string AuthState { get; private set; }
 
         public string UserAgent { get; private set; }
         public string ClientId { get; set; }
@@ -70,25 +72,25 @@ namespace Harvest.Api
             if (RedirectUri == null)
                 throw new InvalidOperationException("RedirectUri is null");
 
-            _authState = state ?? Utilities.GenerateState();
+            AuthState = state ?? Utilities.GenerateState();
 
             var query = new Dictionary<string, string>
             {
                 { "client_id", this.ClientId },
                 { "redirect_uri", this.RedirectUri.ToString() },
-                { "state", _authState },
+                { "state", AuthState },
                 { "scope", scope },
                 { "response_type", codeType ? "code" : "token" }
             };
 
-            return RequestBuilder.BuildUri("https://id.getharvest.com/oauth2/authorize", query);
+            return RequestBuilder.BuildUri($"{harvestIdUrl}/oauth2/authorize", query);
         }
 
-        public async Task<AuthResponse> AuthorizeAsync(Uri callbackUri, bool defaultAccountId = true)
+        public async Task<AuthResponse> AuthorizeAsync(Uri callbackUri, string state = null, bool defaultAccountId = true)
         {
             var query = Utilities.ParseQueryString(callbackUri.GetComponents(UriComponents.Query, UriFormat.UriEscaped));
 
-            if (!query.TryGetValue("state", out var state) || state != _authState)
+            if (!query.TryGetValue("state", out var urlState) || urlState != (state ?? AuthState)) 
                 throw new InvalidOperationException("OAuth states doesn't match");
 
             AuthResponse result = null;
@@ -103,7 +105,7 @@ namespace Harvest.Api
             else if (query.TryGetValue("code", out var code))
             {
                 result = await new RequestBuilder()
-                    .Begin(HttpMethod.Post, "https://id.getharvest.com/api/v1/oauth2/token")
+                    .Begin(HttpMethod.Post, $"{harvestIdUrl}/api/v1/oauth2/token")
                     .Form("code", code)
                     .Form("client_id", this.ClientId)
                     .Form("client_secret", this.ClientSecret)
@@ -131,7 +133,7 @@ namespace Harvest.Api
                 throw new InvalidOperationException("Refresh token is empty");
 
             var result = await new RequestBuilder()
-                .Begin(HttpMethod.Post, "https://id.getharvest.com/api/v1/oauth2/token")
+                .Begin(HttpMethod.Post, $"{harvestIdUrl}/api/v1/oauth2/token")
                 .Form("client_id", this.ClientId)
                 .Form("client_secret", this.ClientSecret)
                 .Form("grant_type", "refresh_token")
@@ -171,7 +173,7 @@ namespace Harvest.Api
         {
             await RefreshTokenIsNeeded();
             return await _requestBuilder
-                .Begin("https://id.getharvest.com/api/v1/accounts")
+                .Begin($"{harvestIdUrl}/api/v1/accounts")
                 .SendAsync<AccountsResponse>(_httpClient, cancellationToken);
         }
 
@@ -180,7 +182,7 @@ namespace Harvest.Api
         {
             await RefreshTokenIsNeeded();
 
-            return await SimpleRequestBuilder("https://api.harvestapp.com/v2/time_entries", accountId)
+            return await SimpleRequestBuilder($"{harvestApiUrl}/time_entries", accountId)
                 .Query("user_id", userId)
                 .Query("client_id", clientId)
                 .Query("project_id", projectId)
@@ -196,28 +198,28 @@ namespace Harvest.Api
         public async Task<TimeEntry> GetTimeEntryAsync(long entryId, long? accountId = null, CancellationToken cancellationToken = default(CancellationToken))
         {
             await RefreshTokenIsNeeded();
-            return await SimpleRequestBuilder($"https://api.harvestapp.com/v2/time_entries/{entryId}", accountId)
+            return await SimpleRequestBuilder($"{harvestApiUrl}/time_entries/{entryId}", accountId)
                 .SendAsync<TimeEntry>(_httpClient, cancellationToken);
         }
 
         public async Task<TimeEntry> RestartTimeEntryAsync(long entryId, long? accountId = null, CancellationToken cancellationToken = default(CancellationToken))
         {
             await RefreshTokenIsNeeded();
-            return await SimpleRequestBuilder($"https://api.harvestapp.com/v2/time_entries/{entryId}/restart", accountId, RequestBuilder.PatchMethod)
+            return await SimpleRequestBuilder($"{harvestApiUrl}/time_entries/{entryId}/restart", accountId, RequestBuilder.PatchMethod)
                 .SendAsync<TimeEntry>(_httpClient, cancellationToken);
         }
 
         public async Task<TimeEntry> StopTimeEntryAsync(long entryId, long? accountId = null, CancellationToken cancellationToken = default(CancellationToken))
         {
             await RefreshTokenIsNeeded();
-            return await SimpleRequestBuilder($"https://api.harvestapp.com/v2/time_entries/{entryId}/stop", accountId, RequestBuilder.PatchMethod)
+            return await SimpleRequestBuilder($"{harvestApiUrl}/time_entries/{entryId}/stop", accountId, RequestBuilder.PatchMethod)
                 .SendAsync<TimeEntry>(_httpClient, cancellationToken);
         }
 
         public async ThreadingTask DeleteTimeEntryAsync(long entryId, long? accountId = null, CancellationToken cancellationToken = default(CancellationToken))
         {
             await RefreshTokenIsNeeded();
-            await SimpleRequestBuilder($"https://api.harvestapp.com/v2/time_entries/{entryId}", accountId, HttpMethod.Delete)
+            await SimpleRequestBuilder($"{harvestApiUrl}/time_entries/{entryId}", accountId, HttpMethod.Delete)
                 .SendAsync(_httpClient, cancellationToken);
         }
 
@@ -227,7 +229,7 @@ namespace Harvest.Api
         {
             await RefreshTokenIsNeeded();
 
-            return await SimpleRequestBuilder($"https://api.harvestapp.com/v2/time_entries", accountId, HttpMethod.Post)
+            return await SimpleRequestBuilder($"{harvestApiUrl}/time_entries", accountId, HttpMethod.Post)
                 .Form("project_id", projectId)
                 .Form("task_id", taskId)
                 .Form("spent_date", spentDate)
@@ -246,7 +248,7 @@ namespace Harvest.Api
         {
             await RefreshTokenIsNeeded();
 
-            return await SimpleRequestBuilder($"https://api.harvestapp.com/v2/time_entries/{entryId}", accountId, RequestBuilder.PatchMethod)
+            return await SimpleRequestBuilder($"{harvestApiUrl}/time_entries/{entryId}", accountId, RequestBuilder.PatchMethod)
                 .Form("project_id", projectId)
                 .Form("task_id", taskId)
                 .Form("spent_date", spentDate)
@@ -264,7 +266,7 @@ namespace Harvest.Api
             await RefreshTokenIsNeeded();
             var userIdOrMe = userId.HasValue ? userId.ToString() : "me";
 
-            return await SimpleRequestBuilder($"https://api.harvestapp.com/v2/users/{userIdOrMe}/project_assignments", accountId)
+            return await SimpleRequestBuilder($"{harvestApiUrl}/users/{userIdOrMe}/project_assignments", accountId)
                 .Query("updated_since", updatedSince)
                 .Query("page", page)
                 .Query("per_page", perPage)
@@ -275,7 +277,7 @@ namespace Harvest.Api
             long? accountId = null, CancellationToken cancellationToken = default(CancellationToken))
         {
             await RefreshTokenIsNeeded();
-            return await SimpleRequestBuilder("https://api.harvestapp.com/v2/projects", accountId)
+            return await SimpleRequestBuilder($"{harvestApiUrl}/projects", accountId)
                 .Query("client_id", clientId)
                 .Query("updated_since", updatedSince)
                 .Query("page", page)
@@ -287,11 +289,106 @@ namespace Harvest.Api
             long? accountId = null, CancellationToken cancellationToken = default(CancellationToken))
         {
             await RefreshTokenIsNeeded();
-            return await SimpleRequestBuilder("https://api.harvestapp.com/v2/tasks", accountId)
+            return await SimpleRequestBuilder($"{harvestApiUrl}/tasks", accountId)
                 .Query("updated_since", updatedSince)
                 .Query("page", page)
                 .Query("per_page", perPage)
                 .SendAsync<TasksResponse>(_httpClient, cancellationToken);
+        }
+
+        public async Task<UserDetails> GetMe(long? accountId = null, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            await RefreshTokenIsNeeded();
+            return await SimpleRequestBuilder($"{harvestApiUrl}/users/me", accountId)
+                .SendAsync<UserDetails>(_httpClient, cancellationToken);
+        }
+
+        public async Task<UserDetails> GetUser(long userId, long? accountId = null, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            await RefreshTokenIsNeeded();
+            return await SimpleRequestBuilder($"{harvestApiUrl}/users/{userId}", accountId)
+                .SendAsync<UserDetails>(_httpClient, cancellationToken);
+        }
+
+        public async Task<UsersResponse> GetUsers(bool? isActive = null, DateTime? updatedSince = null, int? page = null, int? perPage = null,
+            long? accountId = null, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            await RefreshTokenIsNeeded();
+            return await SimpleRequestBuilder($"{harvestApiUrl}/users", accountId)
+                .Query("is_active", isActive)
+                .Query("updated_since", updatedSince)
+                .Query("page", page)
+                .Query("per_page", perPage)
+                .SendAsync<UsersResponse>(_httpClient, cancellationToken);
+        }
+
+        public async Task<TimeEntry> CreateUser(string firstName, string lastName, string email,
+            string telephone = null, string timezone = null, bool? hasAccessToAllFutureProjects = null,
+            bool? isContractor = null, bool? isAdmin = null, bool? isProjectManager = null,
+            bool? canSeeRates = null, bool? canCreateProjects = null, bool? canCreateInvoices = null,
+            bool? isActive = null, int? weeklyCapacity = null, decimal? defaultHourlyRate = null,
+            decimal? costRate = null, string[] roles = null,
+            long? accountId = null, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            await RefreshTokenIsNeeded();
+
+            return await SimpleRequestBuilder($"{harvestApiUrl}/users", accountId, HttpMethod.Post)
+                .Form("first_name", firstName)
+                .Form("last_name", lastName)
+                .Form("email", email)
+                .Form("telephone", telephone) 
+                .Form("timezone", telephone)
+                .Form("has_access_to_all_future_projects", hasAccessToAllFutureProjects)
+                .Form("is_contractor", isContractor)
+                .Form("is_admin", isAdmin)
+                .Form("is_project_manager", isProjectManager)
+                .Form("can_see_rates", canSeeRates)
+                .Form("can_create_projects", canCreateProjects)
+                .Form("can_create_invoices", canCreateInvoices)
+                .Form("is_active", isActive)
+                .Form("weekly_capacity", weeklyCapacity)
+                .Form("default_hourly_rate", defaultHourlyRate)
+                .Form("cost_rate", costRate)
+                //TODO .Form("roles", roles)
+                .SendAsync<TimeEntry>(_httpClient, cancellationToken);
+        }
+
+        public async Task<TimeEntry> UpdateUser(int userId, string firstName = null, string lastName = null, string email = null,
+            string telephone = null, string timezone = null, bool? hasAccessToAllFutureProjects = null,
+            bool? isContractor = null, bool? isAdmin = null, bool? isProjectManager = null,
+            bool? canSeeRates = null, bool? canCreateProjects = null, bool? canCreateInvoices = null,
+            bool? isActive = null, int? weeklyCapacity = null, decimal? defaultHourlyRate = null,
+            decimal? costRate = null, string[] roles = null,
+            long? accountId = null, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            await RefreshTokenIsNeeded();
+
+            return await SimpleRequestBuilder($"{harvestApiUrl}/users/{userId}", accountId, RequestBuilder.PatchMethod)
+                .Form("first_name", firstName)
+                .Form("last_name", lastName)
+                .Form("email", email)
+                .Form("telephone", telephone)
+                .Form("timezone", telephone)
+                .Form("has_access_to_all_future_projects", hasAccessToAllFutureProjects)
+                .Form("is_contractor", isContractor)
+                .Form("is_admin", isAdmin)
+                .Form("is_project_manager", isProjectManager)
+                .Form("can_see_rates", canSeeRates)
+                .Form("can_create_projects", canCreateProjects)
+                .Form("can_create_invoices", canCreateInvoices)
+                .Form("is_active", isActive)
+                .Form("weekly_capacity", weeklyCapacity)
+                .Form("default_hourly_rate", defaultHourlyRate)
+                .Form("cost_rate", costRate)
+                //TODO .Form("roles", roles)
+                .SendAsync<TimeEntry>(_httpClient, cancellationToken);
+        }
+
+        public async ThreadingTask DeleteUser(long userId, long? accountId = null, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            await RefreshTokenIsNeeded();
+            await SimpleRequestBuilder($"{harvestApiUrl}/users/{userId}", accountId, HttpMethod.Delete)
+                .SendAsync(_httpClient, cancellationToken);
         }
         #endregion
 

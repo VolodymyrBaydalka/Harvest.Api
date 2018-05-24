@@ -133,6 +133,13 @@ namespace Harvest.Api
             return this;
         }
 
+        public RequestBuilder Form(string name, bool? value)
+        {
+            if (value != null)
+                this._form.Add(name, value.ToString().ToLowerInvariant());
+
+            return this;
+        }
 
         public RequestBuilder Form(string name, decimal? value)
         {
