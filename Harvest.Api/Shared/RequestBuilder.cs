@@ -272,6 +272,7 @@ namespace Harvest.Api
             var request = new HttpRequestMessage(_httpMethod, BuildUri(_uri, _query));
 
             if (_httpMethod == HttpMethod.Post || _httpMethod == HttpMethod.Put || _httpMethod == PatchMethod)
+            {
                 if (_json != null)
                 {
                     using (var stringWriter = new StringWriter())
@@ -284,10 +285,11 @@ namespace Harvest.Api
                 {
                     request.Content = new FormUrlEncodedContent(_form);
                 }
+            }
 
             foreach (var header in _headers)
             {
-                httpClient.DefaultRequestHeaders.Add(header.Key, header.Value);
+                request.Headers.Add(header.Key, header.Value);
             }
 
             var resp = await httpClient.SendAsync(request, token);
