@@ -16,9 +16,9 @@ namespace Harvest.Api
         public bool CanCreateProjects { get; set; }
         public bool CanCreateInvoices { get; set; }
         public bool IsActive { get; set; }
-        public int WeeklyCapacity { get; set; }
-        public decimal DefaultHourlyRate { get; set; }
-        public decimal CostTate { get; set; }
+        public int? WeeklyCapacity { get; set; }
+        public decimal? DefaultHourlyRate { get; set; }
+        public decimal? CostTate { get; set; }
         public string[] Roles { get; set; }
         public string AvatarUrl { get; set; }
     }
