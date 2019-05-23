@@ -38,10 +38,19 @@ Use authorization helper for OAuth2 Authorization
 
     // you can use helper to parse redirect url 
     var client = await client.AuthorizeAsync(callbackUri);
+
+    // OR for existing accessToken/personal access token
+
+    client.Authorize(accessToken);
+
+    // OR
+
+    var client = HarvestClient.FromAccessToken("HavestApiClient", accessToken);
+
     
 # Current State
 
-Library contains all API I needed. Everything else will be added someday.
+Library contains all API I needed. Everything else will be added someday. Pull requests are welcome.
 
 [0]:https://help.getharvest.com/api-v2/
 [1]:https://www.nuget.org/packages/Harvest.Api/

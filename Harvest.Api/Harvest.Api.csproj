@@ -2,22 +2,23 @@
 
   <PropertyGroup>
     <TargetFrameworks>netstandard2.0;net45;net46</TargetFrameworks>
-    <Version>0.0.1</Version>
-    <AssemblyVersion>0.0.0.1</AssemblyVersion>
-    <FileVersion>0.0.0.1</FileVersion>
+    <Version>0.0.15</Version>
+    <AssemblyVersion>0.0.0.15</AssemblyVersion>
+    <FileVersion>0.0.0.15</FileVersion>
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <Copyright>Copyright © Volodymyr Baydalka 2018</Copyright>
+    <Copyright>Copyright © Volodymyr Baydalka 2019</Copyright>
     <PackageLicenseUrl>https://www.apache.org/licenses/LICENSE-2.0</PackageLicenseUrl>
     <PackageProjectUrl>https://github.com/zVolodymyr/Harvest.Api</PackageProjectUrl>
     <RepositoryUrl>https://github.com/zVolodymyr/Harvest.Api</RepositoryUrl>
     <Description>.NET client for Harvest API Version 2</Description>
     <Authors>Volodymyr Baydalka</Authors>
     <PackageTags>harvest harvestapp harvestapi</PackageTags>
+    <Platforms>AnyCPU;x64</Platforms>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Newtonsoft.Json" Version="11.0.2" />
+    <PackageReference Include="Newtonsoft.Json" Version="12.0.2" />
     <PackageReference Include="System.Net.Http" Version="4.3.3" />
   </ItemGroup>
 

@@ -9,9 +9,9 @@ namespace Harvest.Api
 {
     public class Utilities
     {
-        private static Regex scopeRegex = new Regex("harvest:(?<harvestid>[^ ]*)");
+        private static readonly Regex scopeRegex = new Regex("harvest:(?<harvestid>[^ ]*)");
 
-        internal static Dictionary<string, string> ParseQueryString(String query)
+        internal static Dictionary<string, string> ParseQueryString(string query)
         {
             return query.Split('&').Select(x => x.Split('='))
                 .ToDictionary(x => Uri.UnescapeDataString(x[0]), y => y.Length > 1 ? Uri.UnescapeDataString(y[1]) : null);
