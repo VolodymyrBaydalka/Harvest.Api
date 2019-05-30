@@ -14,7 +14,8 @@ namespace Harvest.Api
     class RequestBuilder
     {
         private const string AccountIdHeader = "Harvest-Account-Id";
-        private const string DateFormat = "yyyy-MM-ddTHH:mm:ssZ";
+        private const string DateFormat = "yyyy-MM-dd";
+        private const string DateTimeFormat = "yyyy-MM-ddTHH:mm:ssZ";
         private readonly static JsonSerializer _serializer;
         internal const string JsonMimeType = "application/json";
 
@@ -93,10 +94,10 @@ namespace Harvest.Api
             return this;
         }
 
-        public RequestBuilder Query(string name, DateTime? value)
+        public RequestBuilder Query(string name, DateTime? value, bool truncateTime = false)
         {
             if (value != null)
-                this._query.Add(name, value.Value.ToString(DateFormat));
+                this._query.Add(name, value.Value.ToString(truncateTime ? DateFormat : DateTimeFormat));
 
             return this;
         }
@@ -149,10 +150,10 @@ namespace Harvest.Api
             return this;
         }
 
-        public RequestBuilder Form(string name, DateTime? value)
+        public RequestBuilder Form(string name, DateTime? value, bool truncateTime = false)
         {
             if (value != null)
-                this._form.Add(name, value.Value.ToString(DateFormat));
+                this._form.Add(name, value.Value.ToString(truncateTime ? DateFormat : DateTimeFormat));
 
             return this;
         }
@@ -216,10 +217,10 @@ namespace Harvest.Api
             return this;
         }
 
-        public RequestBuilder Json(string name, DateTime? value)
+        public RequestBuilder Json(string name, DateTime? value, bool truncateTime = false)
         {
             if (value != null)
-                _json[name] = value.Value.ToString(DateFormat);
+                _json[name] = value.Value.ToString(truncateTime ? DateFormat : DateTimeFormat);
 
             return this;
         }
@@ -228,7 +229,7 @@ namespace Harvest.Api
         public RequestBuilder Json(string name, TimeSpan? value)
         {
             if (value != null)
-                _json[name] = value.Value.ToString(DateFormat);
+                _json[name] = value.Value.ToString(DateTimeFormat);
 
             return this;
         }
