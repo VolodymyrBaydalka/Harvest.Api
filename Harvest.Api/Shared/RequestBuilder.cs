@@ -14,7 +14,7 @@ namespace Harvest.Api
     class RequestBuilder
     {
         private const string AccountIdHeader = "Harvest-Account-Id";
-        private const string DateFormat = "yyyy-MM-dd";
+        private const string DateFormat = "yyyy-MM-ddTHH:mm:ssZ";
         private readonly static JsonSerializer _serializer;
         internal const string JsonMimeType = "application/json";
 
