@@ -27,7 +27,7 @@ namespace Harvest.Api
         public string Currency { get; set; } // The currency code associated with this invoice.
         public string State { get; set; } // The current state of the invoice: draft, open, paid, or closed.
         public DateTime? PeriodStart { get; set; } // Start of the period during which time entries were added to this invoice.
-        public DateTime? periodEnd { get; set; } // End of the period during which time entries were added to this invoice.
+        public DateTime? PeriodEnd { get; set; } // End of the period during which time entries were added to this invoice.
         public DateTime? IssueDate { get; set; } // Date the invoice was issued.
         public DateTime? DueDate { get; set; } // Date the invoice is due.
         public string PaymentTerm { get; set; } // The timeframe in which the invoice should be paid. Options: upon receipt, net 15, net 30, net 45, net 60, or custom.
