@@ -25,6 +25,7 @@ namespace Harvest.Api
         public decimal? CostBudget { get; set; }
         public bool CostBudgetIncludeExpenses { get; set; }
         public decimal? HourlyRate { get; set; }
+        public TaskAssignment[] Tasks { get; set; }
     }
 
 

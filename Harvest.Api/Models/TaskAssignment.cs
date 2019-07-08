@@ -20,4 +20,9 @@ namespace Harvest.Api
             return Task.Name;
         }
     }
+
+    public class TaskAssignmentResponse : PagedList
+    {
+        public TaskAssignment[] TaskAssignments { get; set; }
+    }
 }

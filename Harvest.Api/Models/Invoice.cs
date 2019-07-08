@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Harvest.Api.Models;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
@@ -41,7 +42,7 @@ namespace Harvest.Api
     {
         public int Id { get; set; } // Unique ID for the line item.
         public ProjectReference Project { get; set; } // An object containing the associated project’s id, name, and code.
-        public string Kind { get; set; } // The name of an invoice item category.
+        public LineItemKinds Kind { get; set; } // The name of an invoice item category.
         public string Description { get; set; } // Text description of the line item.
         public decimal Quantity { get; set; } // The unit quantity of the item.
         public decimal UnitPrice { get; set; } // The individual price per unit.
