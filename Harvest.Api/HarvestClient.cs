@@ -348,6 +348,13 @@ namespace Harvest.Api
                 .SendAsync<TasksResponse>(_httpClient, cancellationToken);
         }
 
+        public async Task<Company> GetCompanyAsync(long? accountId = null, CancellationToken cancellationToken = default)
+        {
+            await RefreshTokenIsNeeded();
+            return await SimpleRequestBuilder($"{harvestApiUrl}/company", accountId)
+                .SendAsync<Company>(_httpClient, cancellationToken);
+        }
+
         public async Task<UserDetails> GetMe(long? accountId = null, CancellationToken cancellationToken = default)
         {
             await RefreshTokenIsNeeded();
