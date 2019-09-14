@@ -21,9 +21,9 @@ namespace Harvest.Api
 
         public static HttpMethod PatchMethod = new HttpMethod("PATCH");
 
-        private Dictionary<string, string> _query = new Dictionary<string, string>();
-        private Dictionary<string, string> _form = new Dictionary<string, string>();
-        private Dictionary<string, string> _headers = new Dictionary<string, string>();
+        private readonly Dictionary<string, string> _query = new Dictionary<string, string>();
+        private readonly Dictionary<string, string> _form = new Dictionary<string, string>();
+        private readonly Dictionary<string, string> _headers = new Dictionary<string, string>();
         private JObject _json;
         private HttpMethod _httpMethod;
         private Uri _uri;
@@ -255,7 +255,7 @@ namespace Harvest.Api
             return Header("User-Agent", userAgent);
         }
 
-        public async Task<T> SendAsync<T>(HttpClient httpClient, CancellationToken token = default(CancellationToken))
+        public async Task<T> SendAsync<T>(HttpClient httpClient, CancellationToken token = default)
         {
             var stream = await SendAsyncInternal(httpClient, token, true);
 
@@ -263,7 +263,7 @@ namespace Harvest.Api
                 return _serializer.Deserialize<T>(reader);
         }
 
-        public async System.Threading.Tasks.Task SendAsync(HttpClient httpClient, CancellationToken token = default(CancellationToken))
+        public async System.Threading.Tasks.Task SendAsync(HttpClient httpClient, CancellationToken token = default)
         {
             await SendAsyncInternal(httpClient, token, false);
         }
