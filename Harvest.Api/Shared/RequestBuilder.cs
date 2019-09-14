@@ -36,7 +36,7 @@ namespace Harvest.Api
                 {
                     NamingStrategy = new SnakeCaseNamingStrategy()
                 },
-                Converters = new [] {
+                Converters = new[] {
                     new TimeSpanConverter()
                 }
             });
@@ -100,6 +100,14 @@ namespace Harvest.Api
                 this._query.Add(name, value.Value.ToString(truncateTime ? DateFormat : DateTimeFormat));
 
             return this;
+        }
+
+        public RequestBuilder QueryPageSince(DateTime? updatedSince = null, int? page = null, int? perPage = null)
+        {
+            return this
+                .Query("updated_since", updatedSince)
+                .Query("page", page)
+                .Query("per_page", perPage);
         }
 
         public RequestBuilder Query(string name, string value)
@@ -197,7 +205,7 @@ namespace Harvest.Api
         {
             if (value != null)
                 _json[name] = value;
-            
+
             return this;
         }
 
@@ -332,7 +340,7 @@ namespace Harvest.Api
                 else
                     builder.Append("&");
 
-                if(item.Value != null)
+                if (item.Value != null)
                     builder.Append(Uri.EscapeDataString(item.Key)).Append("=").Append(Uri.EscapeDataString(item.Value));
             }
 
