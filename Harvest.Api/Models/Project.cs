@@ -27,12 +27,6 @@ namespace Harvest.Api
         public decimal? HourlyRate { get; set; }
     }
 
-    public class Client
-    {
-        public long Id { get; set; }
-        public string Name { get; set; }
-        public string Currency { get; set; }
-    }
 
     public class ProjectsResponse : PagedList
     {

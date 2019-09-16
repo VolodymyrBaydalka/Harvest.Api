@@ -1,7 +1,7 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>netstandard2.0;net45;net46</TargetFrameworks>
+    <TargetFrameworks>netstandard2.0;net45;net46;netcoreapp2.2</TargetFrameworks>
     <Version>0.0.16</Version>
     <AssemblyVersion>0.0.0.16</AssemblyVersion>
     <FileVersion>0.0.0.15</FileVersion>

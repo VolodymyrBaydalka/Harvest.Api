@@ -13,6 +13,6 @@ namespace Harvest.Api
 
         public IdNameModel Task { get; set; }
 
-        public Project Project { get; set; }
+        public ProjectReference Project { get; set; }
     }
 }

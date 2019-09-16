@@ -12,7 +12,7 @@ namespace Harvest.Api
         public IdNameModel User { get; set; }
         public Receipt Receipt { get; set; }
         public UserAssignment UserAssignment { get; set; }
-        public ExpenseProject Project { get; set; }
+        public ProjectReference Project { get; set; }
         public bool? Billable { get; set; }
         public DateTime? SpentDate { get; set; }
         public string LockedReason { get; set; }
@@ -46,11 +46,6 @@ namespace Harvest.Api
         public bool UseDefaultRates { get; set; }
         public decimal? HourlyRate { get; set; }
         public decimal? Budget { get; set; }
-    }
-
-    public class ExpenseProject: IdNameModel
-    {
-        public string Code { get; set; }
     }
 
     public class ExpenseInvoice

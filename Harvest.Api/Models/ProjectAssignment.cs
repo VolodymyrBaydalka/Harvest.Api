@@ -11,7 +11,7 @@ namespace Harvest.Api
         public decimal? Budget { get; set; }
         public decimal? HourlyRate { get; set; }
 
-        public Project Project { get; set; }
+        public ProjectReference Project { get; set; }
         public IdNameModel Client { get; set; }
 
         public TaskAssignment[] TaskAssignments { get; set; }
