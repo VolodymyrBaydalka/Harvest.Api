@@ -446,7 +446,7 @@ namespace Harvest.Api
                 .SendAsync<Project>(_httpClient, cancellationToken);
         }
 
-        public async ThreadingTask DeleteProject(long projectId, long? accountId = null, CancellationToken cancellationToken = default)
+        public async ThreadingTask DeleteProjectAsync(long projectId, long? accountId = null, CancellationToken cancellationToken = default)
         {
             await RefreshTokenIsNeeded();
             await SimpleRequestBuilder($"{harvestApiUrl}/projects/{projectId}", accountId, HttpMethod.Delete)
@@ -458,10 +458,49 @@ namespace Harvest.Api
         {
             await RefreshTokenIsNeeded();
             return await SimpleRequestBuilder($"{harvestApiUrl}/tasks", accountId)
-                .Query("updated_since", updatedSince)
-                .Query("page", page)
-                .Query("per_page", perPage)
+                .QueryPageSince(updatedSince, page, perPage)
                 .SendAsync<TasksResponse>(_httpClient, cancellationToken);
+        }
+
+        public async Task<Task> GetTasksAsync(long taskId,
+            long? accountId = null, CancellationToken cancellationToken = default)
+        {
+            await RefreshTokenIsNeeded();
+            return await SimpleRequestBuilder($"{harvestApiUrl}/tasks/{taskId}", accountId)
+                .SendAsync<Task>(_httpClient, cancellationToken);
+        }
+
+        public async Task<Task> CreateTaskAsync(string name, bool? billableByDefault, decimal? defaultHourlyRate,
+            bool? isDefault, bool? isActive, long? accountId = null, CancellationToken cancellationToken = default)
+        {
+            await RefreshTokenIsNeeded();
+            return await SimpleRequestBuilder($"{harvestApiUrl}/tasks", accountId, HttpMethod.Post)
+                .Form("name", name)
+                .Form("billable_by_default", billableByDefault)
+                .Form("default_hourly_rate", defaultHourlyRate)
+                .Form("is_default", isDefault)
+                .Form("isActive", isActive)
+                .SendAsync<Task>(_httpClient, cancellationToken);
+        }
+
+        public async Task<Task> UpdateTaskAsync(long taskId, string name = null, bool? billableByDefault, decimal? defaultHourlyRate,
+            bool? isDefault, bool? isActive, long? accountId = null, CancellationToken cancellationToken = default)
+        {
+            await RefreshTokenIsNeeded();
+            return await SimpleRequestBuilder($"{harvestApiUrl}/tasks/{taskId}", accountId, RequestBuilder.PatchMethod)
+                .Form("name", name)
+                .Form("billable_by_default", billableByDefault)
+                .Form("default_hourly_rate", defaultHourlyRate)
+                .Form("is_default", isDefault)
+                .Form("isActive", isActive)
+                .SendAsync<Task>(_httpClient, cancellationToken);
+        }
+
+        public async ThreadingTask DeleteTaskAsync(long taskId, long? accountId = null, CancellationToken cancellationToken = default)
+        {
+            await RefreshTokenIsNeeded();
+            await SimpleRequestBuilder($"{harvestApiUrl}/tasks/{taskId}", accountId, HttpMethod.Delete)
+                .SendAsync(_httpClient, cancellationToken);
         }
 
         public async Task<Company> GetCompanyAsync(long? accountId = null, CancellationToken cancellationToken = default)
@@ -469,6 +508,103 @@ namespace Harvest.Api
             await RefreshTokenIsNeeded();
             return await SimpleRequestBuilder($"{harvestApiUrl}/company", accountId)
                 .SendAsync<Company>(_httpClient, cancellationToken);
+        }
+
+        public async Task<UserRatesResponse> GetUserCostRatesAsync(long userId, DateTime? updatedSince = null, int? page = null, int? perPage = null, long ? accountId = null, CancellationToken cancellationToken = default)
+        {
+            await RefreshTokenIsNeeded();
+            return await SimpleRequestBuilder($"{harvestApiUrl}/users/{userId}/cost_rates", accountId)
+                .QueryPageSince(updatedSince, page, perPage)
+                .SendAsync<UserRatesResponse>(_httpClient, cancellationToken);
+        }
+
+        public async Task<UserRate> GetUserCostRateAsync(long userId, long costRateId, long? accountId = null, CancellationToken cancellationToken = default)
+        {
+            await RefreshTokenIsNeeded();
+            return await SimpleRequestBuilder($"{harvestApiUrl}/users/{userId}/cost_rates/{costRateId}", accountId)
+                .SendAsync<UserRate>(_httpClient, cancellationToken);
+        }
+
+        public async Task<UserRate> CreateUserCostRateAsync(long userId, decimal amount, DateTime? startDate,
+            long? accountId = null, CancellationToken cancellationToken = default)
+        {
+            await RefreshTokenIsNeeded();
+            return await SimpleRequestBuilder($"{harvestApiUrl}/users/{userId}/cost_rates", accountId, HttpMethod.Post)
+                .Form("amount", amount)
+                .Form("start_date", startDate)
+                .SendAsync<UserRate>(_httpClient, cancellationToken);
+        }
+
+        public async Task<UserRatesResponse> GetUserBillableRatesAsync(long userId, DateTime? updatedSince = null, int? page = null, int? perPage = null, long? accountId = null, CancellationToken cancellationToken = default)
+        {
+            await RefreshTokenIsNeeded();
+            return await SimpleRequestBuilder($"{harvestApiUrl}/users/{userId}/billable_rates", accountId)
+                .QueryPageSince(updatedSince, page, perPage)
+                .SendAsync<UserRatesResponse>(_httpClient, cancellationToken);
+        }
+
+        public async Task<UserRate> GetUserBillableRateAsync(long userId, long costRateId, long? accountId = null, CancellationToken cancellationToken = default)
+        {
+            await RefreshTokenIsNeeded();
+            return await SimpleRequestBuilder($"{harvestApiUrl}/users/{userId}/billable_rates/{costRateId}", accountId)
+                .SendAsync<UserRate>(_httpClient, cancellationToken);
+        }
+
+        public async Task<UserRate> CreateUserBillableRateAsync(long userId, decimal amount, DateTime? startDate,
+            long? accountId = null, CancellationToken cancellationToken = default)
+        {
+            await RefreshTokenIsNeeded();
+            return await SimpleRequestBuilder($"{harvestApiUrl}/users/{userId}/billable_rates", accountId, HttpMethod.Post)
+                .Form("amount", amount)
+                .Form("start_date", startDate)
+                .SendAsync<UserRate>(_httpClient, cancellationToken);
+        }
+
+        public async Task<RolesResponse> GetRolesAsync(DateTime? updatedSince = null, int? page = null, int? perPage = null,
+            long? accountId = null, CancellationToken cancellationToken = default)
+        {
+            await RefreshTokenIsNeeded();
+            return await SimpleRequestBuilder($"{harvestApiUrl}/roles", accountId)
+                .QueryPageSince(updatedSince, page, perPage)
+                .SendAsync<RolesResponse>(_httpClient, cancellationToken);
+        }
+
+        public async Task<Role> GetRoleAsync(long roleId,
+            long? accountId = null, CancellationToken cancellationToken = default)
+        {
+            await RefreshTokenIsNeeded();
+            return await SimpleRequestBuilder($"{harvestApiUrl}/roles/{roleId}", accountId)
+                .SendAsync<Role>(_httpClient, cancellationToken);
+        }
+
+        public async Task<Role> CreateRoleAsync(string name, long[] userIds = null,
+            long? accountId = null, CancellationToken cancellationToken = default)
+        {
+            await RefreshTokenIsNeeded();
+            return await SimpleRequestBuilder($"{harvestApiUrl}/roles", accountId, HttpMethod.Post)
+                .UseJson()
+                .Json("name", name)
+                .Json("user_ids", userIds)
+                .SendAsync<Role>(_httpClient, cancellationToken);
+        }
+
+        public async Task<Role> UpdateRoleAsync(long roleId, string name = null, long[] userIds = null,
+            long? accountId = null, CancellationToken cancellationToken = default)
+        {
+            await RefreshTokenIsNeeded();
+            return await SimpleRequestBuilder($"{harvestApiUrl}/roles/{roleId}", accountId, RequestBuilder.PatchMethod)
+                .UseJson()
+                .Json("name", name)
+                .Json("user_ids", userIds)
+                .SendAsync<Role>(_httpClient, cancellationToken);
+        }
+
+        public async ThreadingTask DeleteRoleAsync(long roleId,
+            long? accountId = null, CancellationToken cancellationToken = default)
+        {
+            await RefreshTokenIsNeeded();
+            await SimpleRequestBuilder($"{harvestApiUrl}/roles/{roleId}", accountId, HttpMethod.Delete)
+                .SendAsync(_httpClient, cancellationToken);
         }
 
         public async Task<UserDetails> GetMe(long? accountId = null, CancellationToken cancellationToken = default)
@@ -491,9 +627,7 @@ namespace Harvest.Api
             await RefreshTokenIsNeeded();
             return await SimpleRequestBuilder($"{harvestApiUrl}/users", accountId)
                 .Query("is_active", isActive)
-                .Query("updated_since", updatedSince)
-                .Query("page", page)
-                .Query("per_page", perPage)
+                .QueryPageSince(updatedSince, page, perPage)
                 .SendAsync<UsersResponse>(_httpClient, cancellationToken);
         }
 
@@ -508,23 +642,24 @@ namespace Harvest.Api
             await RefreshTokenIsNeeded();
 
             return await SimpleRequestBuilder($"{harvestApiUrl}/users", accountId, HttpMethod.Post)
-                .Form("first_name", firstName)
-                .Form("last_name", lastName)
-                .Form("email", email)
-                .Form("telephone", telephone)
-                .Form("timezone", timezone)
-                .Form("has_access_to_all_future_projects", hasAccessToAllFutureProjects)
-                .Form("is_contractor", isContractor)
-                .Form("is_admin", isAdmin)
-                .Form("is_project_manager", isProjectManager)
-                .Form("can_see_rates", canSeeRates)
-                .Form("can_create_projects", canCreateProjects)
-                .Form("can_create_invoices", canCreateInvoices)
-                .Form("is_active", isActive)
-                .Form("weekly_capacity", weeklyCapacity)
-                .Form("default_hourly_rate", defaultHourlyRate)
-                .Form("cost_rate", costRate)
-                //TODO .Form("roles", roles)
+                .UseJson()
+                .Json("first_name", firstName)
+                .Json("last_name", lastName)
+                .Json("email", email)
+                .Json("telephone", telephone)
+                .Json("timezone", timezone)
+                .Json("has_access_to_all_future_projects", hasAccessToAllFutureProjects)
+                .Json("is_contractor", isContractor)
+                .Json("is_admin", isAdmin)
+                .Json("is_project_manager", isProjectManager)
+                .Json("can_see_rates", canSeeRates)
+                .Json("can_create_projects", canCreateProjects)
+                .Json("can_create_invoices", canCreateInvoices)
+                .Json("is_active", isActive)
+                .Json("weekly_capacity", weeklyCapacity)
+                .Json("default_hourly_rate", defaultHourlyRate)
+                .Json("cost_rate", costRate)
+                .Json("roles", roles)
                 .SendAsync<TimeEntry>(_httpClient, cancellationToken);
         }
 
@@ -539,23 +674,24 @@ namespace Harvest.Api
             await RefreshTokenIsNeeded();
 
             return await SimpleRequestBuilder($"{harvestApiUrl}/users/{userId}", accountId, RequestBuilder.PatchMethod)
-                .Form("first_name", firstName)
-                .Form("last_name", lastName)
-                .Form("email", email)
-                .Form("telephone", telephone)
-                .Form("timezone", timezone)
-                .Form("has_access_to_all_future_projects", hasAccessToAllFutureProjects)
-                .Form("is_contractor", isContractor)
-                .Form("is_admin", isAdmin)
-                .Form("is_project_manager", isProjectManager)
-                .Form("can_see_rates", canSeeRates)
-                .Form("can_create_projects", canCreateProjects)
-                .Form("can_create_invoices", canCreateInvoices)
-                .Form("is_active", isActive)
-                .Form("weekly_capacity", weeklyCapacity)
-                .Form("default_hourly_rate", defaultHourlyRate)
-                .Form("cost_rate", costRate)
-                //TODO .Form("roles", roles)
+                .UseJson()
+                .Json("first_name", firstName)
+                .Json("last_name", lastName)
+                .Json("email", email)
+                .Json("telephone", telephone)
+                .Json("timezone", timezone)
+                .Json("has_access_to_all_future_projects", hasAccessToAllFutureProjects)
+                .Json("is_contractor", isContractor)
+                .Json("is_admin", isAdmin)
+                .Json("is_project_manager", isProjectManager)
+                .Json("can_see_rates", canSeeRates)
+                .Json("can_create_projects", canCreateProjects)
+                .Json("can_create_invoices", canCreateInvoices)
+                .Json("is_active", isActive)
+                .Json("weekly_capacity", weeklyCapacity)
+                .Json("default_hourly_rate", defaultHourlyRate)
+                .Json("cost_rate", costRate)
+                .Json("roles", roles)
                 .SendAsync<TimeEntry>(_httpClient, cancellationToken);
         }
 

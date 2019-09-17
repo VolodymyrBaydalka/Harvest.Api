@@ -8,7 +8,7 @@ namespace Harvest.Api
     {
         public string Name { get; set; }
         public bool BillableByDefault { get; set; }
-        public decimal DefaultHourlyRate { get; set; }
+        public decimal? DefaultHourlyRate { get; set; }
         public bool IsDefault { get; set; }
         public bool IsActive { get; set; }
     }

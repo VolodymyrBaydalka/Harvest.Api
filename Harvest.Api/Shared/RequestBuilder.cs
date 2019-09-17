@@ -209,6 +209,14 @@ namespace Harvest.Api
             return this;
         }
 
+        public RequestBuilder Json(string name, bool? value)
+        {
+            if (value != null)
+                _json[name] = value;
+
+            return this;
+        }
+
         public RequestBuilder Json(string name, long? value)
         {
             if (value != null)
@@ -238,6 +246,22 @@ namespace Harvest.Api
         {
             if (value != null)
                 _json[name] = value.Value.ToString(DateTimeFormat);
+
+            return this;
+        }
+
+        public RequestBuilder Json(string name, long[] value)
+        {
+            if (value != null)
+                _json[name] = new JArray(value);
+
+            return this;
+        }
+
+        public RequestBuilder Json(string name, string[] value)
+        {
+            if (value != null)
+                _json[name] = new JArray(value);
 
             return this;
         }
@@ -318,17 +342,17 @@ namespace Harvest.Api
             return null;
         }
 
-        public static Uri BuildUri(string uri, Dictionary<string, string> query)
+        public static Uri BuildUri(string uri, IEnumerable<KeyValuePair<string, string>> query)
         {
             return new UriBuilder(uri) { Query = ToQuery(query) }.Uri;
         }
 
-        public static Uri BuildUri(Uri uri, Dictionary<string, string> query)
+        public static Uri BuildUri(Uri uri, IEnumerable<KeyValuePair<string, string>> query)
         {
             return new UriBuilder(uri) { Query = ToQuery(query) }.Uri;
         }
 
-        public static string ToQuery(Dictionary<string, string> query)
+        public static string ToQuery(IEnumerable<KeyValuePair<string, string>> query)
         {
             var builder = new StringBuilder();
             var first = true;
