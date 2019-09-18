@@ -106,10 +106,10 @@ namespace Harvest.Api
             {
                 result = await new RequestBuilder()
                     .Begin(HttpMethod.Post, $"{harvestIdUrl}/api/v1/oauth2/token")
-                    .Form("code", code)
-                    .Form("client_id", this.ClientId)
-                    .Form("client_secret", this.ClientSecret)
-                    .Form("grant_type", "authorization_code")
+                    .Body("code", code)
+                    .Body("client_id", this.ClientId)
+                    .Body("client_secret", this.ClientSecret)
+                    .Body("grant_type", "authorization_code")
                     .SendAsync<AuthResponse>(_httpClient);
             }
 
@@ -134,10 +134,10 @@ namespace Harvest.Api
 
             var result = await new RequestBuilder()
                 .Begin(HttpMethod.Post, $"{harvestIdUrl}/api/v1/oauth2/token")
-                .Form("client_id", this.ClientId)
-                .Form("client_secret", this.ClientSecret)
-                .Form("grant_type", "refresh_token")
-                .Form("refresh_token", this.RefreshToken)
+                .Body("client_id", this.ClientId)
+                .Body("client_secret", this.ClientSecret)
+                .Body("grant_type", "refresh_token")
+                .Body("refresh_token", this.RefreshToken)
                 .SendAsync<AuthResponse>(_httpClient);
 
             Authorize(result.AccessToken, result.RefreshToken, result.ExpiresIn);
@@ -228,14 +228,14 @@ namespace Harvest.Api
             await RefreshTokenIsNeeded();
 
             return await SimpleRequestBuilder($"{harvestApiUrl}/time_entries", accountId, HttpMethod.Post)
-                .Form("project_id", projectId)
-                .Form("task_id", taskId)
-                .Form("spent_date", spentDate, true)
-                .Form("started_time", startedTime)
-                .Form("ended_time", endedTime)
-                .Form("hours", hours)
-                .Form("notes", notes)
-                .Form("external_reference", externalReference)
+                .Body("project_id", projectId)
+                .Body("task_id", taskId)
+                .Body("spent_date", spentDate, true)
+                .Body("started_time", startedTime)
+                .Body("ended_time", endedTime)
+                .Body("hours", hours)
+                .Body("notes", notes)
+                .Body("external_reference", externalReference)
                 .SendAsync<TimeEntry>(_httpClient, cancellationToken);
         }
 
@@ -247,14 +247,14 @@ namespace Harvest.Api
             await RefreshTokenIsNeeded();
 
             return await SimpleRequestBuilder($"{harvestApiUrl}/time_entries/{entryId}", accountId, RequestBuilder.PatchMethod)
-                .Form("project_id", projectId)
-                .Form("task_id", taskId)
-                .Form("spent_date", spentDate, true)
-                .Form("started_time", startedTime)
-                .Form("ended_time", endedTime)
-                .Form("hours", hours)
-                .Form("notes", notes)
-                .Form("external_reference", externalReference)
+                .Body("project_id", projectId)
+                .Body("task_id", taskId)
+                .Body("spent_date", spentDate, true)
+                .Body("started_time", startedTime)
+                .Body("ended_time", endedTime)
+                .Body("hours", hours)
+                .Body("notes", notes)
+                .Body("external_reference", externalReference)
                 .SendAsync<TimeEntry>(_httpClient, cancellationToken);
         }
 
@@ -297,11 +297,11 @@ namespace Harvest.Api
             await RefreshTokenIsNeeded();
 
             return await SimpleRequestBuilder($"{harvestApiUrl}/projects/{projectId}/task_assignments", accountId, HttpMethod.Post)
-                .Form("task_id", taskId)
-                .Form("is_active", isActive)
-                .Form("billable", billable)
-                .Form("hourly_rate", hourlyRate)
-                .Form("budget", budget)
+                .Body("task_id", taskId)
+                .Body("is_active", isActive)
+                .Body("billable", billable)
+                .Body("hourly_rate", hourlyRate)
+                .Body("budget", budget)
                 .SendAsync<TaskAssignment>(_httpClient, cancellationToken);
         }
 
@@ -311,10 +311,10 @@ namespace Harvest.Api
             await RefreshTokenIsNeeded();
 
             return await SimpleRequestBuilder($"{harvestApiUrl}/projects/{projectId}/task_assignments/{taskAssigmentId}", accountId, RequestBuilder.PatchMethod)
-                .Form("is_active", isActive)
-                .Form("billable", billable)
-                .Form("hourly_rate", hourlyRate)
-                .Form("budget", budget)
+                .Body("is_active", isActive)
+                .Body("billable", billable)
+                .Body("hourly_rate", hourlyRate)
+                .Body("budget", budget)
                 .SendAsync<TaskAssignment>(_httpClient, cancellationToken);
         }
 
@@ -348,10 +348,10 @@ namespace Harvest.Api
         {
             await RefreshTokenIsNeeded();
             return await SimpleRequestBuilder($"{harvestApiUrl}/clients", accountId, HttpMethod.Post)
-                .Form("name", name)
-                .Form("is_active", isActive)
-                .Form("address", address)
-                .Form("currency", currency)
+                .Body("name", name)
+                .Body("is_active", isActive)
+                .Body("address", address)
+                .Body("currency", currency)
                 .SendAsync<Client>(_httpClient, cancellationToken);
         }
 
@@ -360,10 +360,10 @@ namespace Harvest.Api
         {
             await RefreshTokenIsNeeded();
             return await SimpleRequestBuilder($"{harvestApiUrl}/clients/{clientId}", accountId, RequestBuilder.PatchMethod)
-                .Form("name", name)
-                .Form("is_active", isActive)
-                .Form("address", address)
-                .Form("currency", currency)
+                .Body("name", name)
+                .Body("is_active", isActive)
+                .Body("address", address)
+                .Body("currency", currency)
                 .SendAsync<Client>(_httpClient, cancellationToken);
         }
 
@@ -393,25 +393,25 @@ namespace Harvest.Api
         {
             await RefreshTokenIsNeeded();
             return await SimpleRequestBuilder($"{harvestApiUrl}/projects", accountId, HttpMethod.Post)
-                .Form("client_id", clientId)
-                .Form("name", name)
-                .Form("is_billable", isBillable)
-                .Form("bill_by", billBy)
-                .Form("code", code)
-                .Form("is_fixed_fee", isFixedFee)
-                .Form("hourly_rate", hourlyRate)
-                .Form("budget", budget)
-                .Form("budget_by", budgetBy)
-                .Form("budget_is_monthly", budgetIsMonthly)
-                .Form("notify_when_over_budget", notifyWhenOverBudget)
-                .Form("over_budget_notification_percentage", overBudgetNotificationPercentage)
-                .Form("show_budget_to_all", showBudgetToAll)
-                .Form("cost_budget", costBudget)
-                .Form("cost_budget_include_expenses", costBudgetIncludeExpenses)
-                .Form("fee", fee)
-                .Form("notes", notes)
-                .Form("starts_on", startsOn)
-                .Form("ends_on", endsOn)
+                .Body("client_id", clientId)
+                .Body("name", name)
+                .Body("is_billable", isBillable)
+                .Body("bill_by", billBy)
+                .Body("code", code)
+                .Body("is_fixed_fee", isFixedFee)
+                .Body("hourly_rate", hourlyRate)
+                .Body("budget", budget)
+                .Body("budget_by", budgetBy)
+                .Body("budget_is_monthly", budgetIsMonthly)
+                .Body("notify_when_over_budget", notifyWhenOverBudget)
+                .Body("over_budget_notification_percentage", overBudgetNotificationPercentage)
+                .Body("show_budget_to_all", showBudgetToAll)
+                .Body("cost_budget", costBudget)
+                .Body("cost_budget_include_expenses", costBudgetIncludeExpenses)
+                .Body("fee", fee)
+                .Body("notes", notes)
+                .Body("starts_on", startsOn)
+                .Body("ends_on", endsOn)
                 .SendAsync<Project>(_httpClient, cancellationToken);
         }
 
@@ -424,25 +424,25 @@ namespace Harvest.Api
         {
             await RefreshTokenIsNeeded();
             return await SimpleRequestBuilder($"{harvestApiUrl}/projects/{projectId}", accountId, RequestBuilder.PatchMethod)
-                .Form("client_id", clientId)
-                .Form("name", name)
-                .Form("is_billable", isBillable)
-                .Form("bill_by", billBy)
-                .Form("code", code)
-                .Form("is_fixed_fee", isFixedFee)
-                .Form("hourly_rate", hourlyRate)
-                .Form("budget", budget)
-                .Form("budget_by", budgetBy)
-                .Form("budget_is_monthly", budgetIsMonthly)
-                .Form("notify_when_over_budget", notifyWhenOverBudget)
-                .Form("over_budget_notification_percentage", overBudgetNotificationPercentage)
-                .Form("show_budget_to_all", showBudgetToAll)
-                .Form("cost_budget", costBudget)
-                .Form("cost_budget_include_expenses", costBudgetIncludeExpenses)
-                .Form("fee", fee)
-                .Form("notes", notes)
-                .Form("starts_on", startsOn)
-                .Form("ends_on", endsOn)
+                .Body("client_id", clientId)
+                .Body("name", name)
+                .Body("is_billable", isBillable)
+                .Body("bill_by", billBy)
+                .Body("code", code)
+                .Body("is_fixed_fee", isFixedFee)
+                .Body("hourly_rate", hourlyRate)
+                .Body("budget", budget)
+                .Body("budget_by", budgetBy)
+                .Body("budget_is_monthly", budgetIsMonthly)
+                .Body("notify_when_over_budget", notifyWhenOverBudget)
+                .Body("over_budget_notification_percentage", overBudgetNotificationPercentage)
+                .Body("show_budget_to_all", showBudgetToAll)
+                .Body("cost_budget", costBudget)
+                .Body("cost_budget_include_expenses", costBudgetIncludeExpenses)
+                .Body("fee", fee)
+                .Body("notes", notes)
+                .Body("starts_on", startsOn)
+                .Body("ends_on", endsOn)
                 .SendAsync<Project>(_httpClient, cancellationToken);
         }
 
@@ -475,24 +475,24 @@ namespace Harvest.Api
         {
             await RefreshTokenIsNeeded();
             return await SimpleRequestBuilder($"{harvestApiUrl}/tasks", accountId, HttpMethod.Post)
-                .Form("name", name)
-                .Form("billable_by_default", billableByDefault)
-                .Form("default_hourly_rate", defaultHourlyRate)
-                .Form("is_default", isDefault)
-                .Form("isActive", isActive)
+                .Body("name", name)
+                .Body("billable_by_default", billableByDefault)
+                .Body("default_hourly_rate", defaultHourlyRate)
+                .Body("is_default", isDefault)
+                .Body("isActive", isActive)
                 .SendAsync<Task>(_httpClient, cancellationToken);
         }
 
-        public async Task<Task> UpdateTaskAsync(long taskId, string name = null, bool? billableByDefault, decimal? defaultHourlyRate,
-            bool? isDefault, bool? isActive, long? accountId = null, CancellationToken cancellationToken = default)
+        public async Task<Task> UpdateTaskAsync(long taskId, string name = null, bool? billableByDefault = null, decimal? defaultHourlyRate = null,
+            bool? isDefault = null, bool? isActive = null, long? accountId = null, CancellationToken cancellationToken = default)
         {
             await RefreshTokenIsNeeded();
             return await SimpleRequestBuilder($"{harvestApiUrl}/tasks/{taskId}", accountId, RequestBuilder.PatchMethod)
-                .Form("name", name)
-                .Form("billable_by_default", billableByDefault)
-                .Form("default_hourly_rate", defaultHourlyRate)
-                .Form("is_default", isDefault)
-                .Form("isActive", isActive)
+                .Body("name", name)
+                .Body("billable_by_default", billableByDefault)
+                .Body("default_hourly_rate", defaultHourlyRate)
+                .Body("is_default", isDefault)
+                .Body("isActive", isActive)
                 .SendAsync<Task>(_httpClient, cancellationToken);
         }
 
@@ -530,8 +530,8 @@ namespace Harvest.Api
         {
             await RefreshTokenIsNeeded();
             return await SimpleRequestBuilder($"{harvestApiUrl}/users/{userId}/cost_rates", accountId, HttpMethod.Post)
-                .Form("amount", amount)
-                .Form("start_date", startDate)
+                .Body("amount", amount)
+                .Body("start_date", startDate)
                 .SendAsync<UserRate>(_httpClient, cancellationToken);
         }
 
@@ -555,8 +555,8 @@ namespace Harvest.Api
         {
             await RefreshTokenIsNeeded();
             return await SimpleRequestBuilder($"{harvestApiUrl}/users/{userId}/billable_rates", accountId, HttpMethod.Post)
-                .Form("amount", amount)
-                .Form("start_date", startDate)
+                .Body("amount", amount)
+                .Body("start_date", startDate)
                 .SendAsync<UserRate>(_httpClient, cancellationToken);
         }
 
@@ -583,8 +583,8 @@ namespace Harvest.Api
             await RefreshTokenIsNeeded();
             return await SimpleRequestBuilder($"{harvestApiUrl}/roles", accountId, HttpMethod.Post)
                 .UseJson()
-                .Json("name", name)
-                .Json("user_ids", userIds)
+                .Body("name", name)
+                .Body("user_ids", userIds)
                 .SendAsync<Role>(_httpClient, cancellationToken);
         }
 
@@ -594,8 +594,8 @@ namespace Harvest.Api
             await RefreshTokenIsNeeded();
             return await SimpleRequestBuilder($"{harvestApiUrl}/roles/{roleId}", accountId, RequestBuilder.PatchMethod)
                 .UseJson()
-                .Json("name", name)
-                .Json("user_ids", userIds)
+                .Body("name", name)
+                .Body("user_ids", userIds)
                 .SendAsync<Role>(_httpClient, cancellationToken);
         }
 
@@ -643,23 +643,23 @@ namespace Harvest.Api
 
             return await SimpleRequestBuilder($"{harvestApiUrl}/users", accountId, HttpMethod.Post)
                 .UseJson()
-                .Json("first_name", firstName)
-                .Json("last_name", lastName)
-                .Json("email", email)
-                .Json("telephone", telephone)
-                .Json("timezone", timezone)
-                .Json("has_access_to_all_future_projects", hasAccessToAllFutureProjects)
-                .Json("is_contractor", isContractor)
-                .Json("is_admin", isAdmin)
-                .Json("is_project_manager", isProjectManager)
-                .Json("can_see_rates", canSeeRates)
-                .Json("can_create_projects", canCreateProjects)
-                .Json("can_create_invoices", canCreateInvoices)
-                .Json("is_active", isActive)
-                .Json("weekly_capacity", weeklyCapacity)
-                .Json("default_hourly_rate", defaultHourlyRate)
-                .Json("cost_rate", costRate)
-                .Json("roles", roles)
+                .Body("first_name", firstName)
+                .Body("last_name", lastName)
+                .Body("email", email)
+                .Body("telephone", telephone)
+                .Body("timezone", timezone)
+                .Body("has_access_to_all_future_projects", hasAccessToAllFutureProjects)
+                .Body("is_contractor", isContractor)
+                .Body("is_admin", isAdmin)
+                .Body("is_project_manager", isProjectManager)
+                .Body("can_see_rates", canSeeRates)
+                .Body("can_create_projects", canCreateProjects)
+                .Body("can_create_invoices", canCreateInvoices)
+                .Body("is_active", isActive)
+                .Body("weekly_capacity", weeklyCapacity)
+                .Body("default_hourly_rate", defaultHourlyRate)
+                .Body("cost_rate", costRate)
+                .Body("roles", roles)
                 .SendAsync<TimeEntry>(_httpClient, cancellationToken);
         }
 
@@ -675,23 +675,23 @@ namespace Harvest.Api
 
             return await SimpleRequestBuilder($"{harvestApiUrl}/users/{userId}", accountId, RequestBuilder.PatchMethod)
                 .UseJson()
-                .Json("first_name", firstName)
-                .Json("last_name", lastName)
-                .Json("email", email)
-                .Json("telephone", telephone)
-                .Json("timezone", timezone)
-                .Json("has_access_to_all_future_projects", hasAccessToAllFutureProjects)
-                .Json("is_contractor", isContractor)
-                .Json("is_admin", isAdmin)
-                .Json("is_project_manager", isProjectManager)
-                .Json("can_see_rates", canSeeRates)
-                .Json("can_create_projects", canCreateProjects)
-                .Json("can_create_invoices", canCreateInvoices)
-                .Json("is_active", isActive)
-                .Json("weekly_capacity", weeklyCapacity)
-                .Json("default_hourly_rate", defaultHourlyRate)
-                .Json("cost_rate", costRate)
-                .Json("roles", roles)
+                .Body("first_name", firstName)
+                .Body("last_name", lastName)
+                .Body("email", email)
+                .Body("telephone", telephone)
+                .Body("timezone", timezone)
+                .Body("has_access_to_all_future_projects", hasAccessToAllFutureProjects)
+                .Body("is_contractor", isContractor)
+                .Body("is_admin", isAdmin)
+                .Body("is_project_manager", isProjectManager)
+                .Body("can_see_rates", canSeeRates)
+                .Body("can_create_projects", canCreateProjects)
+                .Body("can_create_invoices", canCreateInvoices)
+                .Body("is_active", isActive)
+                .Body("weekly_capacity", weeklyCapacity)
+                .Body("default_hourly_rate", defaultHourlyRate)
+                .Body("cost_rate", costRate)
+                .Body("roles", roles)
                 .SendAsync<TimeEntry>(_httpClient, cancellationToken);
         }
 

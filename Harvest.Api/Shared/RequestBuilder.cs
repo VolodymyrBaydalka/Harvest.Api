@@ -16,6 +16,7 @@ namespace Harvest.Api
         private const string AccountIdHeader = "Harvest-Account-Id";
         private const string DateFormat = "yyyy-MM-dd";
         private const string DateTimeFormat = "yyyy-MM-ddTHH:mm:ssZ";
+        private const string TimeFormat = @"hh\:mm\:ss";
         private readonly static JsonSerializer _serializer;
         internal const string JsonMimeType = "application/json";
 
@@ -70,46 +71,6 @@ namespace Harvest.Api
             return Begin(HttpMethod.Get, uri);
         }
 
-        public RequestBuilder Query(string name, long? value)
-        {
-            if (value != null)
-                this._query.Add(name, value.ToString());
-
-            return this;
-        }
-
-        public RequestBuilder Query(string name, int? value)
-        {
-            if (value != null)
-                this._query.Add(name, value.ToString());
-
-            return this;
-        }
-
-        public RequestBuilder Query(string name, bool? value)
-        {
-            if (value != null)
-                this._query.Add(name, value.ToString().ToLowerInvariant());
-
-            return this;
-        }
-
-        public RequestBuilder Query(string name, DateTime? value, bool truncateTime = false)
-        {
-            if (value != null)
-                this._query.Add(name, value.Value.ToString(truncateTime ? DateFormat : DateTimeFormat));
-
-            return this;
-        }
-
-        public RequestBuilder QueryPageSince(DateTime? updatedSince = null, int? page = null, int? perPage = null)
-        {
-            return this
-                .Query("updated_since", updatedSince)
-                .Query("page", page)
-                .Query("per_page", perPage);
-        }
-
         public RequestBuilder Query(string name, string value)
         {
             if (value != null)
@@ -118,62 +79,40 @@ namespace Harvest.Api
             return this;
         }
 
-        public RequestBuilder Form(string name, string value)
+        public RequestBuilder Query(string name, long? value)
         {
-            if (value != null)
-                this._form.Add(name, value);
-
-            return this;
+            return Query(name, value?.ToString());
         }
 
-        public RequestBuilder Form(string name, TimeSpan? value)
+        public RequestBuilder Query(string name, int? value)
         {
-            if (value != null)
-                this._form.Add(name, value.ToString()); //TODO
-
-            return this;
+            return Query(name, value?.ToString());
         }
 
-        public RequestBuilder Form(string name, long? value)
+        public RequestBuilder Query(string name, bool? value)
         {
-            if (value != null)
-                this._form.Add(name, value.ToString());
-
-            return this;
+            return Query(name, value?.ToString().ToLowerInvariant());
         }
 
-        public RequestBuilder Form(string name, bool? value)
+        public RequestBuilder Query(string name, DateTime? value, bool truncateTime = false)
         {
-            if (value != null)
-                this._form.Add(name, value.ToString().ToLowerInvariant());
-
-            return this;
+            return Query(name, value?.ToString(truncateTime ? DateFormat : DateTimeFormat));
         }
 
-        public RequestBuilder Form(string name, decimal? value)
+        public RequestBuilder QueryPageSince(DateTime? updatedSince = null, int? page = null, int? perPage = null)
         {
-            if (value != null)
-                this._form.Add(name, value.ToString());
-
-            return this;
+            return Query("updated_since", updatedSince).Query("page", page).Query("per_page", perPage);
         }
 
-        public RequestBuilder Form(string name, DateTime? value, bool truncateTime = false)
+        private RequestBuilder BodyInternal(string name, object value)
         {
-            if (value != null)
-                this._form.Add(name, value.Value.ToString(truncateTime ? DateFormat : DateTimeFormat));
+            if (value == null)
+                return this;
 
-            return this;
-        }
-
-        public RequestBuilder Form(string name, ExternalReference value)
-        {
-            if (value != null)
-            {
-                this.Form($"{name}.id", value.Id);
-                this.Form($"{name}.group_id", value.GroupId);
-                this.Form($"{name}.permalink", value.Permalink);
-            }
+            if (_json == null)
+                _form.Add(name, Convert.ToString(value));
+            else
+                _json.Add(name, JToken.FromObject(value));
 
             return this;
         }
@@ -184,84 +123,82 @@ namespace Harvest.Api
             return this;
         }
 
-        public RequestBuilder Json(string name, ExternalReference value)
+        public RequestBuilder Body(string name, string value)
         {
-            if (value != null)
+            return BodyInternal(name, value);
+        }
+
+        public RequestBuilder Body(string name, TimeSpan? value)
+        {
+            return BodyInternal(name, value?.ToString(TimeFormat));
+        }
+
+        public RequestBuilder Body(string name, long? value)
+        {
+            return BodyInternal(name, value);
+        }
+
+        public RequestBuilder Body(string name, bool? value)
+        {
+            return BodyInternal(name, value);
+        }
+
+        public RequestBuilder Body(string name, decimal? value)
+        {
+            return BodyInternal(name, value);
+        }
+
+        public RequestBuilder Body(string name, DateTime? value, bool truncateTime = false)
+        {
+            return BodyInternal(name, value?.ToString(truncateTime ? DateFormat : DateTimeFormat));
+        }
+
+        public RequestBuilder Body(string name, ExternalReference value)
+        {
+            if (value == null)
+                return this;
+
+            if (_json == null)
             {
-                var jref = new JObject
+                _form.Add($"{name}.id", value.Id);
+                _form.Add($"{name}.group_id", value.GroupId);
+                _form.Add($"{name}.permalink", value.Permalink);
+            }
+            else
+            {
+                _json.Add(name, new JObject
                 {
                     ["id"] = value.Id,
                     ["group_id"] = value.GroupId,
                     ["permalink"] = value.Permalink
-                };
-
-                _json[name] = jref;
-            };
+                });
+            }
 
             return this;
         }
 
-        public RequestBuilder Json(string name, string value)
+        public RequestBuilder Body(string name, long[] value)
         {
-            if (value != null)
-                _json[name] = value;
+            if (value == null)
+                return this;
+
+            if (_json == null)
+                throw new NotImplementedException();
+            else
+                _json.Add(name, new JArray(value));
 
             return this;
         }
 
-        public RequestBuilder Json(string name, bool? value)
+        public RequestBuilder Body(string name, string[] value)
         {
-            if (value != null)
-                _json[name] = value;
+            if (value == null)
+                return this;
 
-            return this;
-        }
-
-        public RequestBuilder Json(string name, long? value)
-        {
-            if (value != null)
-                _json[name] = value;
-
-            return this;
-        }
-
-        public RequestBuilder Json(string name, decimal? value)
-        {
-            if (value != null)
-                _json[name] = value;
-
-            return this;
-        }
-
-        public RequestBuilder Json(string name, DateTime? value, bool truncateTime = false)
-        {
-            if (value != null)
-                _json[name] = value.Value.ToString(truncateTime ? DateFormat : DateTimeFormat);
-
-            return this;
-        }
-
-
-        public RequestBuilder Json(string name, TimeSpan? value)
-        {
-            if (value != null)
-                _json[name] = value.Value.ToString(DateTimeFormat);
-
-            return this;
-        }
-
-        public RequestBuilder Json(string name, long[] value)
-        {
-            if (value != null)
-                _json[name] = new JArray(value);
-
-            return this;
-        }
-
-        public RequestBuilder Json(string name, string[] value)
-        {
-            if (value != null)
-                _json[name] = new JArray(value);
+            if (_json == null)
+                throw new NotImplementedException();
+            else
+                _json.Add(name, new JArray(value));
 
             return this;
         }

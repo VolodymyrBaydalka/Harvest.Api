@@ -14,5 +14,10 @@ namespace Harvest.Api
         public IdNameModel Task { get; set; }
 
         public ProjectReference Project { get; set; }
+
+        public override string ToString()
+        {
+            return Task.Name;
+        }
     }
 }
