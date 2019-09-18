@@ -1,11 +1,13 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.27004.2005
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.29102.190
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Harvest.Api", "Harvest.Api\Harvest.Api.csproj", "{6112A715-DF10-4703-B6EA-CAEE51939DAD}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Harvest.Api", "Harvest.Api\Harvest.Api.csproj", "{6112A715-DF10-4703-B6EA-CAEE51939DAD}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Example", "Example\Example.csproj", "{2D890489-6C53-4CD9-9C0E-3ABFDA66AA73}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "XUnitTests", "XUnitTests\XUnitTests.csproj", "{0B05DC34-5D2F-4BE6-AE56-BC8D7BFA2A4C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,6 +23,10 @@ Global
 		{2D890489-6C53-4CD9-9C0E-3ABFDA66AA73}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2D890489-6C53-4CD9-9C0E-3ABFDA66AA73}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2D890489-6C53-4CD9-9C0E-3ABFDA66AA73}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0B05DC34-5D2F-4BE6-AE56-BC8D7BFA2A4C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0B05DC34-5D2F-4BE6-AE56-BC8D7BFA2A4C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0B05DC34-5D2F-4BE6-AE56-BC8D7BFA2A4C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0B05DC34-5D2F-4BE6-AE56-BC8D7BFA2A4C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
