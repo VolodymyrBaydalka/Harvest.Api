@@ -384,6 +384,20 @@ namespace Harvest.Api
                 .SendAsync<Project>(_httpClient, cancellationToken);
         }
 
+        public async Task<Project> GetProjectAsync(long? projectId, bool includeTasks = false, long? accountId = null, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            await RefreshTokenIsNeeded();
+            var project = await SimpleRequestBuilder($"{harvestApiUrl}/projects/{projectId}", accountId)
+                .SendAsync<Project>(_httpClient, cancellationToken);
+            
+            if (includeTasks && projectId != null)
+            {
+                var taskAssignements = await GetTaskAssignmentsAsync((long)projectId, accountId: accountId, cancellationToken: cancellationToken);
+                project.Tasks = taskAssignements.TaskAssignments;
+            }
+            return project;
+        }
+
         public async Task<Project> CreateProjectAsync(long clientId, string name, bool isBillable, string billBy = "none",
             string code = null, bool? isFixedFee = null, decimal? hourlyRate = null, decimal? budget = null, string budgetBy = "none",
             bool? budgetIsMonthly = null, bool? notifyWhenOverBudget = null, bool? overBudgetNotificationPercentage = null,
@@ -723,6 +737,31 @@ namespace Harvest.Api
             return await SimpleRequestBuilder($"{harvestApiUrl}/expenses/{expenseId}", accountId)
                 .SendAsync<Expense>(_httpClient, cancellationToken);
         }
+
+        public async Task<InvoicesResponse> GetInvoicesAsync(long? clientId = null, long? projectId = null, InvoiceState state = null, DateTime? updatedSince = null, DateTime? from = null, DateTime? to = null, int? page = null, int? perPage = null,
+            long? accountId = null, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            await RefreshTokenIsNeeded();
+            return await SimpleRequestBuilder($"{harvestApiUrl}/invoices", accountId)
+                .Query("client_id", clientId)
+                .Query("project_id", projectId)
+                .Query("updated_since", updatedSince)
+                .Query("state", state?.ToString())
+                .Query("from", from)
+                .Query("to", to)
+                .Query("page", page)
+                .Query("per_page", perPage)
+                .SendAsync<InvoicesResponse>(_httpClient, cancellationToken);
+        }
+
+        public async Task<Invoice> GetInvoiceAsync(string invoiceId, long? clientId = null, long? accountId = null, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            await RefreshTokenIsNeeded();
+            return await SimpleRequestBuilder($"{harvestApiUrl}/invoices/{invoiceId}", accountId)
+                .Query("client_id", clientId)
+                .SendAsync<Invoice>(_httpClient, cancellationToken);
+        }
+
         #endregion
 
         #region Implementation
