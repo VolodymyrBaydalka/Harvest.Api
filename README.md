@@ -17,7 +17,7 @@ Usage
 -----
 Create a client object:
 
-    var client = HarvestClient.FromAccessToken("user_agent");
+    var client = HarvestClient.FromAccessToken("user_agent", "access_token");
 
 Call API methods
 
