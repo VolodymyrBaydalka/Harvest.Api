@@ -2,9 +2,9 @@
 
   <PropertyGroup>
     <TargetFrameworks>netstandard2.0;net45;net46;netcoreapp2.2</TargetFrameworks>
-    <Version>0.0.17</Version>
-    <AssemblyVersion>0.0.0.17</AssemblyVersion>
-    <FileVersion>0.0.0.17</FileVersion>
+    <Version>0.0.18</Version>
+    <AssemblyVersion>0.0.0.18</AssemblyVersion>
+    <FileVersion>0.0.0.18</FileVersion>
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <Copyright>Copyright © Volodymyr Baydalka 2019</Copyright>
