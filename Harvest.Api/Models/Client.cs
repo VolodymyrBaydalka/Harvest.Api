@@ -6,7 +6,6 @@ namespace Harvest.Api
 {
     public class Client : BaseModel
     {
-        public long Id { get; set; }
         public string Name { get; set; }
         public bool IsActive { get; set; }
         public string Currency { get; set; }

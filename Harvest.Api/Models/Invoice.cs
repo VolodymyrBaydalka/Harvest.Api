@@ -1,5 +1,4 @@
-﻿using Harvest.Api.Models;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Text;
 
@@ -9,7 +8,7 @@ namespace Harvest.Api
     {
         public Client Client { get; set; } // An object containing invoice’s client id and name.
         public List<LineItem> LineItems { get; set; } // Array of invoice line items.
-        public Guid? Estimate { get; set; } // An object containing the associated estimate’s id.
+        public IdNameModel Estimate { get; set; } // An object containing the associated estimate’s id.
         public IdNameModel Retainer { get; set; } // An object containing the associated retainer’s id.
         public IdNameModel Creator { get; set; } // An object containing the id and name of the person that created the invoice.
         public string ClientKey { get; set; } // Used to build a URL to the public web invoice for your client:https://{ACCOUNT_SUBDOMAIN}.harvestapp.com/client/invoices/abc123456
@@ -17,8 +16,8 @@ namespace Harvest.Api
         public string PurchaseOrder { get; set; } // The purchase order number.
         public decimal Amount { get; set; } // The total amount for the invoice, including any discounts and taxes.
         public decimal DueAmount { get; set; } // The total amount due at this time for this invoice.
-        public decimal Tax { get; set; } // This percentage is applied to the subtotal, including line items and discounts.
-        public decimal TaxAmount { get; set; } // The first amount of tax included, calculated from tax. If no tax is defined, this value will be null.
+        public decimal? Tax { get; set; } // This percentage is applied to the subtotal, including line items and discounts.
+        public decimal? TaxAmount { get; set; } // The first amount of tax included, calculated from tax. If no tax is defined, this value will be null.
         public decimal? Tax2 { get; set; } // This percentage is applied to the subtotal, including line items and discounts.
         public decimal? Tax2Amount { get; set; } // The amount calculated from tax2.
         public decimal? Discount { get; set; } // This percentage is subtracted from the subtotal.
@@ -26,7 +25,7 @@ namespace Harvest.Api
         public string Subject { get; set; } // The invoice subject.
         public string Notes { get; set; } // Any additional notes included on the invoice.
         public string Currency { get; set; } // The currency code associated with this invoice.
-        public string State { get; set; } // The current state of the invoice: draft, open, paid, or closed.
+        public InvoiceState State { get; set; } // The current state of the invoice: draft, open, paid, or closed.
         public DateTime? PeriodStart { get; set; } // Start of the period during which time entries were added to this invoice.
         public DateTime? PeriodEnd { get; set; } // End of the period during which time entries were added to this invoice.
         public DateTime? IssueDate { get; set; } // Date the invoice was issued.
@@ -42,7 +41,7 @@ namespace Harvest.Api
     {
         public int Id { get; set; } // Unique ID for the line item.
         public ProjectReference Project { get; set; } // An object containing the associated project’s id, name, and code.
-        public LineItemKinds Kind { get; set; } // The name of an invoice item category.
+        public string Kind { get; set; } // The name of an invoice item category.
         public string Description { get; set; } // Text description of the line item.
         public decimal Quantity { get; set; } // The unit quantity of the item.
         public decimal UnitPrice { get; set; } // The individual price per unit.
@@ -57,20 +56,11 @@ namespace Harvest.Api
     }
 
 
-    public class InvoiceState
+    public enum InvoiceState
     {
-        private InvoiceState(string value) { Value = value; }
-
-        public string Value { get; set; }
-
-        public static InvoiceState Draft { get { return new InvoiceState("draft"); } }
-        public static InvoiceState Open { get { return new InvoiceState("open"); } }
-        public static InvoiceState Paid { get { return new InvoiceState("paid"); } }
-        public static InvoiceState Closed { get { return new InvoiceState("closed"); } }
-
-        public override string ToString()
-        {
-            return Value;
-        }
+        Draft,
+        Open,
+        Paid,
+        Closed
     }
 }
