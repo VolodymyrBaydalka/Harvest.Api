@@ -6,7 +6,7 @@ namespace Harvest.Api
 {
     public class IdNameModel
     {
-        public long? Id { get; set; }
+        public long Id { get; set; }
         public string Name { get; set; }
     }
 }
