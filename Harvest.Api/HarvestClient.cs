@@ -222,7 +222,7 @@ namespace Harvest.Api
         }
 
         public async Task<TimeEntry> CreateTimeEntryAsync(long projectId, long taskId, DateTime spentDate,
-            TimeSpan? startedTime = null, TimeSpan? endedTime = null, decimal? hours = null, string notes = null, ExternalReference externalReference = null,
+            TimeSpan? startedTime = null, TimeSpan? endedTime = null, decimal? hours = null, string notes = null, long? userId = null, ExternalReference externalReference = null,
             long? accountId = null, CancellationToken cancellationToken = default)
         {
             await RefreshTokenIsNeeded();
@@ -235,6 +235,7 @@ namespace Harvest.Api
                 .Body("ended_time", endedTime)
                 .Body("hours", hours)
                 .Body("notes", notes)
+                .Body("user_id", userId)
                 .Body("external_reference", externalReference)
                 .SendAsync<TimeEntry>(_httpClient, cancellationToken);
         }
