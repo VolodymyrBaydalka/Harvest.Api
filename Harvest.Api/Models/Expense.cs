@@ -39,15 +39,6 @@ namespace Harvest.Api
         public string ContentType { get; set; }
     }
 
-    public class UserAssignment : BaseModel
-    {
-        public bool IsProjectManager { get; set; }
-        public bool IsActive { get; set; }
-        public bool UseDefaultRates { get; set; }
-        public decimal? HourlyRate { get; set; }
-        public decimal? Budget { get; set; }
-    }
-
     public class ExpenseInvoice
     {
         public long Id { get; set; }

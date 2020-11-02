@@ -140,7 +140,7 @@ namespace Harvest.Api
 
         public RequestBuilder Body(string name, bool? value)
         {
-            return BodyInternal(name, value);
+            return BodyInternal(name, value?.ToString().ToLowerInvariant());
         }
 
         public RequestBuilder Body(string name, decimal? value)

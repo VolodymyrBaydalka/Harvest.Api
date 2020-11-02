@@ -259,6 +259,37 @@ namespace Harvest.Api
                 .SendAsync<TimeEntry>(_httpClient, cancellationToken);
         }
 
+        public async Task<UserAssignmentsResponse> GetUserAssignmentsAsync(long? userAssignmentId = null, long? projectId = null, bool ? isActive=null, DateTime? updatedSince = null, int? page = null, int? perPage = null,
+            long? accountId = null, CancellationToken cancellationToken = default)
+        {
+            await RefreshTokenIsNeeded();
+            
+            if (projectId.HasValue)
+            {
+                if (userAssignmentId.HasValue)
+                {
+                    return await SimpleRequestBuilder($"{harvestApiUrl}/projects/{projectId}/user_assignments/{userAssignmentId}", accountId)
+                        .Query("is_active", isActive)
+                        .QueryPageSince(updatedSince, page, perPage)
+                        .SendAsync<UserAssignmentsResponse>(_httpClient, cancellationToken);
+                }
+                else
+                {
+                    return await SimpleRequestBuilder($"{harvestApiUrl}/projects/{projectId}/user_assignments", accountId)
+                        .Query("is_active", isActive)
+                        .QueryPageSince(updatedSince, page, perPage)
+                        .SendAsync<UserAssignmentsResponse>(_httpClient, cancellationToken);
+                }
+            }
+            else
+            {
+                return await SimpleRequestBuilder($"{harvestApiUrl}/user_assignments", accountId)
+                    .Query("is_active", isActive)
+                    .QueryPageSince(updatedSince, page, perPage)
+                    .SendAsync<UserAssignmentsResponse>(_httpClient, cancellationToken);
+            }
+        }
+
         public async Task<ProjectAssignmentsResponse> GetProjectAssignmentsAsync(long? userId = null, DateTime? updatedSince = null, int? page = null, int? perPage = null,
             long? accountId = null, CancellationToken cancellationToken = default)
         {
@@ -368,11 +399,12 @@ namespace Harvest.Api
                 .SendAsync<Client>(_httpClient, cancellationToken);
         }
 
-        public async Task<ProjectsResponse> GetProjectsAsync(long? clientId = null, DateTime? updatedSince = null, int? page = null, int? perPage = null,
+        public async Task<ProjectsResponse> GetProjectsAsync(bool? isActive = null, long? clientId = null, DateTime? updatedSince = null, int? page = null, int? perPage = null,
             long? accountId = null, CancellationToken cancellationToken = default)
         {
             await RefreshTokenIsNeeded();
             return await SimpleRequestBuilder($"{harvestApiUrl}/projects", accountId)
+                .Query("is_active", isActive)
                 .Query("client_id", clientId)
                 .QueryPageSince(updatedSince, page, perPage)
                 .SendAsync<ProjectsResponse>(_httpClient, cancellationToken);
@@ -416,7 +448,7 @@ namespace Harvest.Api
                 .SendAsync<Project>(_httpClient, cancellationToken);
         }
 
-        public async Task<Project> UpdateProjectAsync(long projectId, long? clientId = null, string name = null, bool? isBillable = null,
+        public async Task<Project> UpdateProjectAsync(long projectId, long? clientId = null, string name = null, bool? isActive = null, bool? isBillable = null,
             string billBy = "none", string code = null, bool? isFixedFee = null, decimal? hourlyRate = null, decimal? budget = null,
             string budgetBy = "none", bool? budgetIsMonthly = null, bool? notifyWhenOverBudget = null, bool? overBudgetNotificationPercentage = null,
             bool? showBudgetToAll = null, decimal? costBudget = null, bool? costBudgetIncludeExpenses = null,
@@ -427,6 +459,7 @@ namespace Harvest.Api
             return await SimpleRequestBuilder($"{harvestApiUrl}/projects/{projectId}", accountId, RequestBuilder.PatchMethod)
                 .Body("client_id", clientId)
                 .Body("name", name)
+                .Body("is_active", isActive)
                 .Body("is_billable", isBillable)
                 .Body("bill_by", billBy)
                 .Body("code", code)
