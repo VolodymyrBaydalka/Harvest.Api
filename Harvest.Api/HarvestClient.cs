@@ -419,7 +419,7 @@ namespace Harvest.Api
 
         public async Task<Project> CreateProjectAsync(long clientId, string name, bool isBillable, string billBy = "none",
             string code = null, bool? isFixedFee = null, decimal? hourlyRate = null, decimal? budget = null, string budgetBy = "none",
-            bool? budgetIsMonthly = null, bool? notifyWhenOverBudget = null, bool? overBudgetNotificationPercentage = null,
+            bool? budgetIsMonthly = null, bool? notifyWhenOverBudget = null, decimal? overBudgetNotificationPercentage = null,
             bool? showBudgetToAll = null, decimal? costBudget = null, bool? costBudgetIncludeExpenses = null,
             decimal? fee = null, string notes = null, DateTime? startsOn = null, DateTime? endsOn = null,
             long? accountId = null, CancellationToken cancellationToken = default)
@@ -443,8 +443,8 @@ namespace Harvest.Api
                 .Body("cost_budget_include_expenses", costBudgetIncludeExpenses)
                 .Body("fee", fee)
                 .Body("notes", notes)
-                .Body("starts_on", startsOn)
-                .Body("ends_on", endsOn)
+                .Body("starts_on", startsOn, truncateTime:true)
+                .Body("ends_on", endsOn, truncateTime: true)
                 .SendAsync<Project>(_httpClient, cancellationToken);
         }
 
