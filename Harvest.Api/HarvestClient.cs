@@ -290,6 +290,35 @@ namespace Harvest.Api
                 .SendAsync<UserAssignment>(_httpClient, cancellationToken);
         }
 
+        public async Task<UserAssignment> CreateUserAssignmentAsync(long projectId, long userId, bool? isActive = null, bool? isProjectManager = null, bool? useDefaultRates = null, decimal? hourlyRate = null, decimal? budget = null,
+            long? accountId = null, CancellationToken cancellationToken = default)
+        {
+            await RefreshTokenIsNeeded();
+
+            return await SimpleRequestBuilder($"{harvestApiUrl}/projects/{projectId}/user_assignments", accountId, HttpMethod.Post)
+                .Body("user_id", userId)
+                .Body("is_active", isActive)
+                .Body("is_project_manager", isProjectManager)
+                .Body("use_default_rates", useDefaultRates)
+                .Body("hourly_rate", hourlyRate)
+                .Body("budget", budget)
+                .SendAsync<UserAssignment>(_httpClient, cancellationToken);
+        }
+
+        public async Task<UserAssignment> UpdateUserAssignmentAsync(long projectId, long userAssigmentId, bool? isActive = null, bool? isProjectManager = null, bool? useDefaultRates = null, decimal? hourlyRate = null, decimal? budget = null,
+            long? accountId = null, CancellationToken cancellationToken = default)
+        {
+            await RefreshTokenIsNeeded();
+
+            return await SimpleRequestBuilder($"{harvestApiUrl}/projects/{projectId}/user_assignments/{userAssigmentId}", accountId, RequestBuilder.PatchMethod)
+                .Body("is_active", isActive)
+                .Body("is_project_manager", isProjectManager)
+                .Body("use_default_rates", useDefaultRates)
+                .Body("hourly_rate", hourlyRate)
+                .Body("budget", budget)
+                .SendAsync<UserAssignment>(_httpClient, cancellationToken);
+        }
+
         public async Task<ProjectAssignmentsResponse> GetProjectAssignmentsAsync(long? userId = null, DateTime? updatedSince = null, int? page = null, int? perPage = null,
             long? accountId = null, CancellationToken cancellationToken = default)
         {
@@ -419,7 +448,7 @@ namespace Harvest.Api
 
         public async Task<Project> CreateProjectAsync(long clientId, string name, bool isBillable, string billBy = "none",
             string code = null, bool? isFixedFee = null, decimal? hourlyRate = null, decimal? budget = null, string budgetBy = "none",
-            bool? budgetIsMonthly = null, bool? notifyWhenOverBudget = null, bool? overBudgetNotificationPercentage = null,
+            bool? budgetIsMonthly = null, bool? notifyWhenOverBudget = null, decimal? overBudgetNotificationPercentage = null,
             bool? showBudgetToAll = null, decimal? costBudget = null, bool? costBudgetIncludeExpenses = null,
             decimal? fee = null, string notes = null, DateTime? startsOn = null, DateTime? endsOn = null,
             long? accountId = null, CancellationToken cancellationToken = default)
@@ -443,8 +472,8 @@ namespace Harvest.Api
                 .Body("cost_budget_include_expenses", costBudgetIncludeExpenses)
                 .Body("fee", fee)
                 .Body("notes", notes)
-                .Body("starts_on", startsOn)
-                .Body("ends_on", endsOn)
+                .Body("starts_on", startsOn, truncateTime:true)
+                .Body("ends_on", endsOn, truncateTime: true)
                 .SendAsync<Project>(_httpClient, cancellationToken);
         }
 
