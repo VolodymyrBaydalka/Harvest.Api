@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Net.Http;
 using System.Net.Http.Headers;
@@ -694,7 +694,7 @@ namespace Harvest.Api
                 .SendAsync<UsersResponse>(_httpClient, cancellationToken);
         }
 
-        public async Task<TimeEntry> CreateUser(string firstName, string lastName, string email,
+        public async Task<UserDetails> CreateUser(string firstName, string lastName, string email,
             string telephone = null, string timezone = null, bool? hasAccessToAllFutureProjects = null,
             bool? isContractor = null, bool? isAdmin = null, bool? isProjectManager = null,
             bool? canSeeRates = null, bool? canCreateProjects = null, bool? canCreateInvoices = null,
@@ -723,10 +723,10 @@ namespace Harvest.Api
                 .Body("default_hourly_rate", defaultHourlyRate)
                 .Body("cost_rate", costRate)
                 .Body("roles", roles)
-                .SendAsync<TimeEntry>(_httpClient, cancellationToken);
+                .SendAsync<UserDetails>(_httpClient, cancellationToken);
         }
 
-        public async Task<TimeEntry> UpdateUser(int userId, string firstName = null, string lastName = null, string email = null,
+        public async Task<UserDetails> UpdateUser(int userId, string firstName = null, string lastName = null, string email = null,
             string telephone = null, string timezone = null, bool? hasAccessToAllFutureProjects = null,
             bool? isContractor = null, bool? isAdmin = null, bool? isProjectManager = null,
             bool? canSeeRates = null, bool? canCreateProjects = null, bool? canCreateInvoices = null,
@@ -755,7 +755,7 @@ namespace Harvest.Api
                 .Body("default_hourly_rate", defaultHourlyRate)
                 .Body("cost_rate", costRate)
                 .Body("roles", roles)
-                .SendAsync<TimeEntry>(_httpClient, cancellationToken);
+                .SendAsync<UserDetails>(_httpClient, cancellationToken);
         }
 
         public async ThreadingTask DeleteUser(long userId, long? accountId = null, CancellationToken cancellationToken = default)
