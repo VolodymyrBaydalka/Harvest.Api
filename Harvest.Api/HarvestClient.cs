@@ -542,7 +542,7 @@ namespace Harvest.Api
                 .Body("billable_by_default", billableByDefault)
                 .Body("default_hourly_rate", defaultHourlyRate)
                 .Body("is_default", isDefault)
-                .Body("isActive", isActive)
+                .Body("is_active", isActive)
                 .SendAsync<Task>(_httpClient, cancellationToken);
         }
 
@@ -555,7 +555,7 @@ namespace Harvest.Api
                 .Body("billable_by_default", billableByDefault)
                 .Body("default_hourly_rate", defaultHourlyRate)
                 .Body("is_default", isDefault)
-                .Body("isActive", isActive)
+                .Body("is_active", isActive)
                 .SendAsync<Task>(_httpClient, cancellationToken);
         }
 
