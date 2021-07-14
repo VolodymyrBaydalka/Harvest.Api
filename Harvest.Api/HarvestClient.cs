@@ -525,7 +525,7 @@ namespace Harvest.Api
                 .SendAsync<TasksResponse>(_httpClient, cancellationToken);
         }
 
-        public async Task<Task> GetTasksAsync(long taskId,
+        public async Task<Task> GetTaskAsync(long taskId,
             long? accountId = null, CancellationToken cancellationToken = default)
         {
             await RefreshTokenIsNeeded();
@@ -765,7 +765,7 @@ namespace Harvest.Api
                 .SendAsync(_httpClient, cancellationToken);
         }
 
-        public async Task<ExpensesResponse> GetExpenses(long? userId = null, long? clientId = null, long? projectId = null, bool? isBilled = null,
+        public async Task<ExpensesResponse> GetExpensesAsync(long? userId = null, long? clientId = null, long? projectId = null, bool? isBilled = null,
             DateTime? updatedSince = null, int? page = null, int? perPage = null, long? accountId = null, CancellationToken cancellationToken = default)
         {
             await RefreshTokenIsNeeded();
@@ -780,7 +780,7 @@ namespace Harvest.Api
                 .SendAsync<ExpensesResponse>(_httpClient, cancellationToken);
         }
 
-        public async Task<Expense> GetExpense(long expenseId, long? accountId = null, CancellationToken cancellationToken = default)
+        public async Task<Expense> GetExpenseAsync(long expenseId, long? accountId = null, CancellationToken cancellationToken = default)
         {
             await RefreshTokenIsNeeded();
             return await SimpleRequestBuilder($"{harvestApiUrl}/expenses/{expenseId}", accountId)
@@ -810,7 +810,7 @@ namespace Harvest.Api
                 .SendAsync<Invoice>(_httpClient, cancellationToken);
         }
 
-        public async Task<InvoiceItemCategoriesReponse> GetInvoiceItemCategories(DateTime? updatedSince = null, int? page = null, int? perPage = null,
+        public async Task<InvoiceItemCategoriesReponse> GetInvoiceItemCategoriesAsync(DateTime? updatedSince = null, int? page = null, int? perPage = null,
             long? accountId = null, CancellationToken cancellationToken = default)
         {
             await RefreshTokenIsNeeded();
@@ -819,7 +819,7 @@ namespace Harvest.Api
                 .SendAsync<InvoiceItemCategoriesReponse>(_httpClient, cancellationToken);
         }
 
-        public async Task<InvoiceItemCategory> GetInvoiceItemCategory(long invoiceItemCategoryId,
+        public async Task<InvoiceItemCategory> GetInvoiceItemCategoryAsync(long invoiceItemCategoryId,
             long? accountId = null, CancellationToken cancellationToken = default)
         {
             await RefreshTokenIsNeeded();
@@ -827,7 +827,7 @@ namespace Harvest.Api
                 .SendAsync<InvoiceItemCategory>(_httpClient, cancellationToken);
         }
 
-        public async Task<InvoiceItemCategory> CreateInvoiceItemCategory(string name,
+        public async Task<InvoiceItemCategory> CreateInvoiceItemCategoryAsync(string name,
             long? accountId = null, CancellationToken cancellationToken = default)
         {
             await RefreshTokenIsNeeded();
@@ -836,7 +836,7 @@ namespace Harvest.Api
                 .SendAsync<InvoiceItemCategory>(_httpClient, cancellationToken);
         }
 
-        public async Task<InvoiceItemCategory> UpdateInvoiceItemCategory(long invoiceItemCategoryId, string name,
+        public async Task<InvoiceItemCategory> UpdateInvoiceItemCategoryAsync(long invoiceItemCategoryId, string name,
             long? accountId = null, CancellationToken cancellationToken = default)
         {
             await RefreshTokenIsNeeded();
@@ -845,7 +845,7 @@ namespace Harvest.Api
                 .SendAsync<InvoiceItemCategory>(_httpClient, cancellationToken);
         }
 
-        public async ThreadingTask DeleteInvoiceItemCategory(long invoiceItemCategoryId,
+        public async ThreadingTask DeleteInvoiceItemCategoryAsync(long invoiceItemCategoryId,
             long? accountId = null, CancellationToken cancellationToken = default)
         {
             await RefreshTokenIsNeeded();
@@ -854,7 +854,7 @@ namespace Harvest.Api
         }
 
 
-        public async Task<InvoicePaymentsReponse> GetInvoicePayments(long invoiceId,
+        public async Task<InvoicePaymentsReponse> GetInvoicePaymentsAsync(long invoiceId,
             DateTime? updatedSince = null, int? page = null, int? perPage = null,
             long? accountId = null, CancellationToken cancellationToken = default)
         {
@@ -864,7 +864,7 @@ namespace Harvest.Api
                 .SendAsync<InvoicePaymentsReponse>(_httpClient, cancellationToken);
         }
 
-        public async Task<InvoiceItemCategory> CreateInvoicePayment(long invoiceId,
+        public async Task<InvoiceItemCategory> CreateInvoicePaymentAsync(long invoiceId,
             decimal amount, DateTime? paidAt = null, DateTime? paidDate = null, string notes = null,
             long? accountId = null, CancellationToken cancellationToken = default)
         {
@@ -877,7 +877,7 @@ namespace Harvest.Api
                 .SendAsync<InvoiceItemCategory>(_httpClient, cancellationToken);
         }
 
-        public async ThreadingTask DeleteInvoicePayment(long invoiceId, long paymentId,
+        public async ThreadingTask DeleteInvoicePaymentAsync(long invoiceId, long paymentId,
             long? accountId = null, CancellationToken cancellationToken = default)
         {
             await RefreshTokenIsNeeded();
