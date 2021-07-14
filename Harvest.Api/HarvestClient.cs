@@ -766,17 +766,17 @@ namespace Harvest.Api
         }
 
         public async Task<ExpensesResponse> GetExpensesAsync(long? userId = null, long? clientId = null, long? projectId = null, bool? isBilled = null,
-            DateTime? updatedSince = null, int? page = null, int? perPage = null, long? accountId = null, CancellationToken cancellationToken = default)
+            DateTime? updatedSince = null, DateTime? from = null, DateTime? to = null, int? page = null, int? perPage = null, long? accountId = null, CancellationToken cancellationToken = default)
         {
             await RefreshTokenIsNeeded();
             return await SimpleRequestBuilder($"{harvestApiUrl}/expenses", accountId)
+                .QueryPageSince(updatedSince, page, perPage)
                 .Query("user_id", userId)
                 .Query("client_id", clientId)
                 .Query("project_id", projectId)
                 .Query("is_billed", isBilled)
-                .Query("updated_since", updatedSince)
-                .Query("page", page)
-                .Query("per_page", perPage)
+                .Query("from", from)
+                .Query("to", to)
                 .SendAsync<ExpensesResponse>(_httpClient, cancellationToken);
         }
 
