@@ -190,6 +190,60 @@ namespace Harvest.Api
             return this;
         }
 
+        public RequestBuilder Body(string name, LineItem[] value, LineItemOperation operation)
+        {
+            if (value == null)
+                return this;
+
+            if (_json == null)
+                throw new NotImplementedException();
+            else
+            {
+                JArray lineItems = new JArray();
+                foreach(LineItem lineItem in value)
+                {
+                    switch(operation)
+                    {
+                        case LineItemOperation.Create:
+                            lineItems.Add(new JObject
+                            {
+                                ["project_id"] = lineItem.Project.Id,
+                                ["kind"] = lineItem.Kind,
+                                ["description"] = lineItem.Description,
+                                ["quantity"] = lineItem.Quantity,
+                                ["unit_price"] = lineItem.UnitPrice,
+                                ["taxed"] = lineItem.Taxed,
+                                ["taxed2"] = lineItem.Taxed2
+                            });
+                            break;
+                        case LineItemOperation.Update:
+                            lineItems.Add(new JObject
+                            {
+                                ["id"] = lineItem.Id,
+                                ["project_id"] = lineItem.Project.Id,
+                                ["kind"] = lineItem.Kind,
+                                ["description"] = lineItem.Description,
+                                ["quantity"] = lineItem.Quantity,
+                                ["unit_price"] = lineItem.UnitPrice,
+                                ["taxed"] = lineItem.Taxed,
+                                ["taxed2"] = lineItem.Taxed2
+                            });
+                            break;
+                        case LineItemOperation.Delete:
+                            lineItems.Add(new JObject
+                            {
+                                ["id"] = lineItem.Id,
+                                ["_destroy"] = true,
+                            });
+                            break;
+                    }
+                }
+                _json.Add(name, lineItems);
+            }
+                
+            return this;
+        }
+
         public RequestBuilder Body(string name, string[] value)
         {
             if (value == null)

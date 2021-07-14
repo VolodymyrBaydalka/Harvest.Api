@@ -63,4 +63,11 @@ namespace Harvest.Api
         Paid,
         Closed
     }
+
+    public enum LineItemOperation
+    {
+        Create,
+        Delete,
+        Update
+    }
 }
