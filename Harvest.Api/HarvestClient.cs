@@ -829,38 +829,37 @@ namespace Harvest.Api
                 .Body("issue_date", issueDate)
                 .Body("due_date", dueDate)
                 .Body("payment_term", paymentTerm)
-                .Body("line_items", lineItems, LineItemOperation.Update)
+                .Body("line_items", lineItems)
                 .SendAsync<Invoice>(_httpClient, cancellationToken);
         }
 
         public async Task<Invoice> CreateInvoiceItemsAsync(long invoiceId, LineItem[] lineItems, long? accountId = null, CancellationToken cancellationToken = default)
         {
-            await RefreshTokenIsNeeded();
-
-            return await SimpleRequestBuilder($"{harvestApiUrl}/invoices/{invoiceId}", accountId, RequestBuilder.PatchMethod)
-                .UseJson()
-                .Body("line_items", lineItems, LineItemOperation.Create)
-                .SendAsync<Invoice>(_httpClient, cancellationToken);
+            foreach(LineItem lineItem in lineItems)
+            {
+                lineItem.Id = null;
+                lineItem._Destory = null;
+                lineItem.Position = null;
+            }
+            return await UpdateInvoiceItemsAsync(invoiceId, lineItems, accountId, cancellationToken);
         }
 
         public async Task<Invoice> UpdateInvoiceItemsAsync(long invoiceId, LineItem[] lineItems, long? accountId = null, CancellationToken cancellationToken = default)
         {
             await RefreshTokenIsNeeded();
-
             return await SimpleRequestBuilder($"{harvestApiUrl}/invoices/{invoiceId}", accountId, RequestBuilder.PatchMethod)
                 .UseJson()
-                .Body("line_items", lineItems, LineItemOperation.Update)
+                .Body("line_items_attributes", lineItems)
                 .SendAsync<Invoice>(_httpClient, cancellationToken);
         }
 
         public async Task<Invoice> DeleteInvoiceItemsAsync(long invoiceId, LineItem[] lineItems, long? accountId = null, CancellationToken cancellationToken = default)
         {
-            await RefreshTokenIsNeeded();
-
-            return await SimpleRequestBuilder($"{harvestApiUrl}/invoices/{invoiceId}", accountId, RequestBuilder.PatchMethod)
-                .UseJson()
-                .Body("line_items", lineItems, LineItemOperation.Delete)
-                .SendAsync<Invoice>(_httpClient, cancellationToken);
+            foreach (LineItem lineItem in lineItems)
+            {
+                lineItem._Destory = true;
+            }
+            return await UpdateInvoiceItemsAsync(invoiceId, lineItems, accountId, cancellationToken);
         }
         
 

@@ -190,7 +190,7 @@ namespace Harvest.Api
             return this;
         }
 
-        public RequestBuilder Body(string name, LineItem[] value, LineItemOperation operation)
+        public RequestBuilder Body(string name, LineItem[] value)
         {
             if (value == null)
                 return this;
@@ -202,41 +202,20 @@ namespace Harvest.Api
                 JArray lineItems = new JArray();
                 foreach(LineItem lineItem in value)
                 {
-                    switch(operation)
+                    lineItems.Add(new JObject
                     {
-                        case LineItemOperation.Create:
-                            lineItems.Add(new JObject
-                            {
-                                ["project_id"] = lineItem.Project.Id,
-                                ["kind"] = lineItem.Kind,
-                                ["description"] = lineItem.Description,
-                                ["quantity"] = lineItem.Quantity,
-                                ["unit_price"] = lineItem.UnitPrice,
-                                ["taxed"] = lineItem.Taxed,
-                                ["taxed2"] = lineItem.Taxed2
-                            });
-                            break;
-                        case LineItemOperation.Update:
-                            lineItems.Add(new JObject
-                            {
-                                ["id"] = lineItem.Id,
-                                ["project_id"] = lineItem.Project.Id,
-                                ["kind"] = lineItem.Kind,
-                                ["description"] = lineItem.Description,
-                                ["quantity"] = lineItem.Quantity,
-                                ["unit_price"] = lineItem.UnitPrice,
-                                ["taxed"] = lineItem.Taxed,
-                                ["taxed2"] = lineItem.Taxed2
-                            });
-                            break;
-                        case LineItemOperation.Delete:
-                            lineItems.Add(new JObject
-                            {
-                                ["id"] = lineItem.Id,
-                                ["_destroy"] = true,
-                            });
-                            break;
-                    }
+                        ["id"] = lineItem.Id,
+                        ["project_id"] = lineItem.Project.Id,
+                        ["kind"] = lineItem.Kind,
+                        ["description"] = lineItem.Description,
+                        ["quantity"] = lineItem.Quantity,
+                        ["unit_price"] = lineItem.UnitPrice,
+                        ["taxed"] = lineItem.Taxed,
+                        ["taxed2"] = lineItem.Taxed2,
+                        // Undocumented fields
+                        ["_destroy"] = lineItem._Destory,
+                        ["position"] = lineItem.Position
+                    });
                 }
                 _json.Add(name, lineItems);
             }

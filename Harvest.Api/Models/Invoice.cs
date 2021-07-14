@@ -39,7 +39,7 @@ namespace Harvest.Api
 
     public class LineItem
     {
-        public int Id { get; set; } // Unique ID for the line item.
+        public int? Id { get; set; } // Unique ID for the line item.
         public ProjectReference Project { get; set; } // An object containing the associated project’s id, name, and code.
         public string Kind { get; set; } // The name of an invoice item category.
         public string Description { get; set; } // Text description of the line item.
@@ -48,6 +48,10 @@ namespace Harvest.Api
         public decimal Amount { get; set; } // The line item subtotal (quantity * unit_price).
         public bool Taxed { get; set; } // Whether the invoice’s tax percentage applies to this line item.
         public bool Taxed2 { get; set; } // Whether the invoice’s tax2 percentage applies to this line item.
+
+        // Undocumented fields
+        public bool? _Destory { get; set; } // Whether the line item will be deleted
+        public int? Position { get; set; } // The new position of the line item in the invoice (0-based)
     }
 
     public class InvoicesResponse : PagedList
@@ -62,12 +66,5 @@ namespace Harvest.Api
         Open,
         Paid,
         Closed
-    }
-
-    public enum LineItemOperation
-    {
-        Create,
-        Delete,
-        Update
     }
 }
