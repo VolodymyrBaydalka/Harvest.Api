@@ -839,7 +839,6 @@ namespace Harvest.Api
             {
                 lineItem.Id = null;
                 lineItem._Destory = null;
-                lineItem.Position = null;
             }
             return await UpdateInvoiceItemsAsync(invoiceId, lineItems, accountId, cancellationToken);
         }
@@ -849,7 +848,7 @@ namespace Harvest.Api
             await RefreshTokenIsNeeded();
             return await SimpleRequestBuilder($"{harvestApiUrl}/invoices/{invoiceId}", accountId, RequestBuilder.PatchMethod)
                 .UseJson()
-                .Body("line_items_attributes", lineItems)
+                .Body("line_items", lineItems)
                 .SendAsync<Invoice>(_httpClient, cancellationToken);
         }
 

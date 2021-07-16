@@ -205,7 +205,7 @@ namespace Harvest.Api
                     lineItems.Add(new JObject
                     {
                         ["id"] = lineItem.Id,
-                        ["project_id"] = lineItem.Project.Id,
+                        ["project_id"] = lineItem.Project?.Id,
                         ["kind"] = lineItem.Kind,
                         ["description"] = lineItem.Description,
                         ["quantity"] = lineItem.Quantity,
@@ -214,7 +214,6 @@ namespace Harvest.Api
                         ["taxed2"] = lineItem.Taxed2,
                         // Undocumented fields
                         ["_destroy"] = lineItem._Destory,
-                        ["position"] = lineItem.Position
                     });
                 }
                 _json.Add(name, lineItems);

@@ -7,7 +7,7 @@ namespace Harvest.Api
     public class Invoice : BaseModel
     {
         public Client Client { get; set; } // An object containing invoice’s client id and name.
-        public List<LineItem> LineItems { get; set; } // Array of invoice line items.
+        public LineItem[] LineItems { get; set; } // Array of invoice line items.
         public IdNameModel Estimate { get; set; } // An object containing the associated estimate’s id.
         public IdNameModel Retainer { get; set; } // An object containing the associated retainer’s id.
         public IdNameModel Creator { get; set; } // An object containing the id and name of the person that created the invoice.
@@ -51,7 +51,6 @@ namespace Harvest.Api
 
         // Undocumented fields
         public bool? _Destory { get; set; } // Whether the line item will be deleted
-        public int? Position { get; set; } // The new position of the line item in the invoice (0-based)
     }
 
     public class InvoicesResponse : PagedList
