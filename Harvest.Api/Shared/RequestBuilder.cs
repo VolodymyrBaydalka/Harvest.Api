@@ -190,6 +190,38 @@ namespace Harvest.Api
             return this;
         }
 
+        public RequestBuilder Body(string name, LineItem[] value)
+        {
+            if (value == null)
+                return this;
+
+            if (_json == null)
+                throw new NotImplementedException();
+            else
+            {
+                JArray lineItems = new JArray();
+                foreach(LineItem lineItem in value)
+                {
+                    lineItems.Add(new JObject
+                    {
+                        ["id"] = lineItem.Id,
+                        ["project_id"] = lineItem.Project?.Id,
+                        ["kind"] = lineItem.Kind,
+                        ["description"] = lineItem.Description,
+                        ["quantity"] = lineItem.Quantity,
+                        ["unit_price"] = lineItem.UnitPrice,
+                        ["taxed"] = lineItem.Taxed,
+                        ["taxed2"] = lineItem.Taxed2,
+                        // Undocumented fields
+                        ["_destroy"] = lineItem._Destory,
+                    });
+                }
+                _json.Add(name, lineItems);
+            }
+                
+            return this;
+        }
+
         public RequestBuilder Body(string name, string[] value)
         {
             if (value == null)

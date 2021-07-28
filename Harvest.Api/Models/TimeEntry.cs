@@ -10,6 +10,7 @@ namespace Harvest.Api
         public IdNameModel Client { get; set; }
         public IdNameModel Project { get; set; }
         public IdNameModel Task { get; set; }
+        public IdNumberModel Invoice { get; set; }
         public decimal Hours { get; set; }
         public string Notes { get; set; }
 

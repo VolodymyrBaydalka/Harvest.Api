@@ -7,7 +7,7 @@ namespace Harvest.Api
     public class Invoice : BaseModel
     {
         public Client Client { get; set; } // An object containing invoice’s client id and name.
-        public List<LineItem> LineItems { get; set; } // Array of invoice line items.
+        public LineItem[] LineItems { get; set; } // Array of invoice line items.
         public IdNameModel Estimate { get; set; } // An object containing the associated estimate’s id.
         public IdNameModel Retainer { get; set; } // An object containing the associated retainer’s id.
         public IdNameModel Creator { get; set; } // An object containing the id and name of the person that created the invoice.
@@ -39,7 +39,7 @@ namespace Harvest.Api
 
     public class LineItem
     {
-        public int Id { get; set; } // Unique ID for the line item.
+        public int? Id { get; set; } // Unique ID for the line item.
         public ProjectReference Project { get; set; } // An object containing the associated project’s id, name, and code.
         public string Kind { get; set; } // The name of an invoice item category.
         public string Description { get; set; } // Text description of the line item.
@@ -48,6 +48,9 @@ namespace Harvest.Api
         public decimal Amount { get; set; } // The line item subtotal (quantity * unit_price).
         public bool Taxed { get; set; } // Whether the invoice’s tax percentage applies to this line item.
         public bool Taxed2 { get; set; } // Whether the invoice’s tax2 percentage applies to this line item.
+
+        // Undocumented fields
+        public bool? _Destory { get; set; } // Whether the line item will be deleted
     }
 
     public class InvoicesResponse : PagedList
