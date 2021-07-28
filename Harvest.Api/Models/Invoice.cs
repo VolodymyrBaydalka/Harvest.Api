@@ -50,6 +50,7 @@ namespace Harvest.Api
         public bool Taxed2 { get; set; } // Whether the invoice’s tax2 percentage applies to this line item.
 
         // Undocumented fields
+        [Undocumented]
         public bool? _Destory { get; set; } // Whether the line item will be deleted
     }
 
