@@ -2,9 +2,9 @@
 
   <PropertyGroup>
     <TargetFrameworks>netstandard2.0;net45;net46;netcoreapp2.2</TargetFrameworks>
-    <Version>0.0.24</Version>
-    <AssemblyVersion>0.0.0.24</AssemblyVersion>
-    <FileVersion>0.0.0.24</FileVersion>
+    <Version>0.0.25</Version>
+    <AssemblyVersion>0.0.0.25</AssemblyVersion>
+    <FileVersion>0.0.0.25</FileVersion>
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <Copyright>Copyright © Volodymyr Baydalka 2020</Copyright>
@@ -19,8 +19,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Newtonsoft.Json" Version="12.0.2" />
-    <PackageReference Include="System.Net.Http" Version="4.3.3" />
+    <PackageReference Include="Newtonsoft.Json" Version="12.0.*" />
+    <PackageReference Include="System.Net.Http" Version="4.3.*" />
   </ItemGroup>
 
 </Project>
