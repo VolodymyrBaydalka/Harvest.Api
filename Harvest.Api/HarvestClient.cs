@@ -105,7 +105,7 @@ namespace Harvest.Api
             else if (query.TryGetValue("code", out var code))
             {
                 result = await new RequestBuilder()
-                    .Begin(HttpMethod.Post, $"{harvestIdUrl}/api/v1/oauth2/token")
+                    .Begin(HttpMethod.Post, $"{harvestIdUrl}/api/v2/oauth2/token")
                     .Body("code", code)
                     .Body("client_id", this.ClientId)
                     .Body("client_secret", this.ClientSecret)
@@ -133,7 +133,7 @@ namespace Harvest.Api
                 throw new InvalidOperationException("Refresh token is empty");
 
             var result = await new RequestBuilder()
-                .Begin(HttpMethod.Post, $"{harvestIdUrl}/api/v1/oauth2/token")
+                .Begin(HttpMethod.Post, $"{harvestIdUrl}/api/v2/oauth2/token")
                 .Body("client_id", this.ClientId)
                 .Body("client_secret", this.ClientSecret)
                 .Body("grant_type", "refresh_token")
@@ -173,7 +173,7 @@ namespace Harvest.Api
         {
             await RefreshTokenIsNeeded();
             return await _requestBuilder
-                .Begin($"{harvestIdUrl}/api/v1/accounts")
+                .Begin($"{harvestIdUrl}/api/v2/accounts")
                 .SendAsync<AccountsResponse>(_httpClient, cancellationToken);
         }
 
