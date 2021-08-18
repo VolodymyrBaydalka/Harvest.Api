@@ -11,6 +11,10 @@ namespace Harvest.Api
         public IdNameModel Project { get; set; }
         public IdNameModel Task { get; set; }
         public IdNumberModel Invoice { get; set; }
+
+        public TaskAssignment TaskAssignment { get; set; }
+        public UserAssignment UserAssignment { get; set; }
+
         public decimal Hours { get; set; }
         public string Notes { get; set; }
 
