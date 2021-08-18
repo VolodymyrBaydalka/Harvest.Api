@@ -945,6 +945,17 @@ namespace Harvest.Api
                 .SendAsync(_httpClient, cancellationToken);
         }
 
+        public async Task<TimeReportResponse> GetProjectsReportAsync(DateTime fromDate, DateTime toDate, int? page = null, int? perPage = null,
+            long? accountId = null, CancellationToken cancellationToken = default)
+        {
+            await RefreshTokenIsNeeded();
+            return await SimpleRequestBuilder($"{harvestApiUrl}/reports/time/projects", accountId)
+                .Query("from", fromDate)
+                .Query("to", toDate)
+                .Query("page", page)
+                .Query("per_page", perPage)
+                .SendAsync<TimeReportResponse>(_httpClient, cancellationToken);
+        }
         #endregion
 
         #region Implementation
