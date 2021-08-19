@@ -222,6 +222,37 @@ namespace Harvest.Api
             return this;
         }
 
+        public RequestBuilder Body(string name, LineItemParam[] value)
+        {
+            if (value == null)
+                return this;
+
+            if (_json == null)
+                throw new NotImplementedException();
+            else
+            {
+                JArray lineItemParams = new JArray();
+                foreach (LineItemParam lineItemParam in value)
+                {
+                    lineItemParams.Add(new JObject
+                    {
+                        ["project_id"] = lineItemParam.ProjectId,
+                        ["kind"] = lineItemParam.Kind,
+                        ["description"] = lineItemParam.Description,
+                        ["quantity"] = lineItemParam.Quantity,
+                        ["unit_price"] = lineItemParam.UnitPrice,
+                        ["taxed"] = lineItemParam.Taxed,
+                        ["taxed2"] = lineItemParam.Taxed2,
+						// Undocumented fields
+                        ["_destroy"] = lineItemParam._Destory,
+                    });
+                }
+                _json.Add(name, lineItemParams);
+            }
+
+            return this;
+        }
+
         public RequestBuilder Body(string name, string[] value)
         {
             if (value == null)
