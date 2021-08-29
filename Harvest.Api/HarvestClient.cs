@@ -114,7 +114,7 @@ namespace Harvest.Api
             }
 
             if (result == null)
-                throw new ArgumentException(nameof(callbackUri));
+                throw new ArgumentException("Failed to authorize",  nameof(callbackUri));
 
             Authorize(result.AccessToken, result.RefreshToken, result.ExpiresIn);
 
