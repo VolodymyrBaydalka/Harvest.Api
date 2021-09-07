@@ -802,6 +802,32 @@ namespace Harvest.Api
                 .SendAsync<InvoicesResponse>(_httpClient, cancellationToken);
         }
 
+        public async Task<Invoice> CreateFreeFormInvoiceAsync(long clientId, long? retainerId = null, long? estimateId = null, string number = null, string purchaseOrder = null, 
+            decimal? tax = null, decimal? tax2 = null, decimal? discount = null, string subject = null, string notes = null, string currency = null, DateTime? issueDate = null, 
+            DateTime? dueDate = null, string paymentTerm = null, LineItemParam[] lineItemParams = null,
+            long? accountId = null, CancellationToken cancellationToken = default)
+        {
+            await RefreshTokenIsNeeded();
+            return await SimpleRequestBuilder($"{harvestApiUrl}/invoices", accountId, HttpMethod.Post)
+                .UseJson()
+                .Body("client_id", clientId)
+                .Body("retainer_id", retainerId)
+                .Body("estimate_id", estimateId)
+                .Body("number", number)
+                .Body("purchase_order", purchaseOrder)
+                .Body("tax", tax)
+                .Body("tax2", tax2)
+                .Body("discount", discount)
+                .Body("subject", subject)
+                .Body("notes", notes)
+                .Body("currency", currency)
+                .Body("issue_date", issueDate)
+                .Body("due_date", dueDate)
+                .Body("payment_term", paymentTerm)
+                .Body("line_items", lineItemParams)
+                .SendAsync<Invoice>(_httpClient, cancellationToken);
+        }
+
         public async Task<Invoice> UpdateInvoiceAsync(long invoiceId,
             long? clientId = null, long? retainerId = null, long? estimateId = null,
             string number = null, string purchaseOrder = null, 
@@ -945,6 +971,53 @@ namespace Harvest.Api
                 .SendAsync(_httpClient, cancellationToken);
         }
 
+        public async Task<TimeReportResponse> GetClientsReportAsync(DateTime fromDate, DateTime toDate, int? page = null, int? perPage = null,
+            long? accountId = null, CancellationToken cancellationToken = default)
+        {
+            await RefreshTokenIsNeeded();
+            return await SimpleRequestBuilder($"{harvestApiUrl}/reports/time/clients", accountId)
+                .Query("from", fromDate)
+                .Query("to", toDate)
+                .Query("page", page)
+                .Query("per_page", perPage)
+                .SendAsync<TimeReportResponse>(_httpClient, cancellationToken);
+        }
+
+        public async Task<TimeReportResponse> GetProjectsReportAsync(DateTime fromDate, DateTime toDate, int? page = null, int? perPage = null,
+            long? accountId = null, CancellationToken cancellationToken = default)
+        {
+            await RefreshTokenIsNeeded();
+            return await SimpleRequestBuilder($"{harvestApiUrl}/reports/time/projects", accountId)
+                .Query("from", fromDate)
+                .Query("to", toDate)
+                .Query("page", page)
+                .Query("per_page", perPage)
+                .SendAsync<TimeReportResponse>(_httpClient, cancellationToken);
+        }
+
+        public async Task<TimeReportResponse> GetTasksReportAsync(DateTime fromDate, DateTime toDate, int? page = null, int? perPage = null,
+            long? accountId = null, CancellationToken cancellationToken = default)
+        {
+            await RefreshTokenIsNeeded();
+            return await SimpleRequestBuilder($"{harvestApiUrl}/reports/time/tasks", accountId)
+                .Query("from", fromDate)
+                .Query("to", toDate)
+                .Query("page", page)
+                .Query("per_page", perPage)
+                .SendAsync<TimeReportResponse>(_httpClient, cancellationToken);
+        }
+
+        public async Task<TimeReportResponse> GetTeamReportAsync(DateTime fromDate, DateTime toDate, int? page = null, int? perPage = null,
+            long? accountId = null, CancellationToken cancellationToken = default)
+        {
+            await RefreshTokenIsNeeded();
+            return await SimpleRequestBuilder($"{harvestApiUrl}/reports/time/team", accountId)
+                .Query("from", fromDate)
+                .Query("to", toDate)
+                .Query("page", page)
+                .Query("per_page", perPage)
+                .SendAsync<TimeReportResponse>(_httpClient, cancellationToken);
+        }
         #endregion
 
         #region Implementation

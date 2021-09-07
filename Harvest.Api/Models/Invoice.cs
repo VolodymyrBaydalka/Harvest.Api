@@ -67,4 +67,18 @@ namespace Harvest.Api
         Paid,
         Closed
     }
+
+    public class LineItemParam
+    {
+        public long? ProjectId { get; set; } // The ID of the project associated with this line item.
+        public string Kind { get; set; } // The name of an invoice item category.
+        public string Description { get; set; } // Text description of the line item.
+        public decimal Quantity { get; set; } // The unit quantity of the item.
+        public decimal UnitPrice { get; set; } // The individual price per unit.
+        public bool Taxed { get; set; } // Whether the invoice’s tax percentage applies to this line item.
+        public bool Taxed2 { get; set; } // Whether the invoice’s tax2 percentage applies to this line item.
+        // Undocumented fields
+        [Undocumented]
+        public bool? _Destory { get; set; } // Whether the line item will be deleted
+    }
 }
