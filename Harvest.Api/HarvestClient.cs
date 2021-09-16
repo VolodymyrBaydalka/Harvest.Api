@@ -533,8 +533,8 @@ namespace Harvest.Api
                 .SendAsync<Task>(_httpClient, cancellationToken);
         }
 
-        public async Task<Task> CreateTaskAsync(string name, bool? billableByDefault, decimal? defaultHourlyRate,
-            bool? isDefault, bool? isActive, long? accountId = null, CancellationToken cancellationToken = default)
+        public async Task<Task> CreateTaskAsync(string name, bool? billableByDefault = null, decimal? defaultHourlyRate = null,
+            bool? isDefault = null, bool? isActive = null, long? accountId = null, CancellationToken cancellationToken = default)
         {
             await RefreshTokenIsNeeded();
             return await SimpleRequestBuilder($"{harvestApiUrl}/tasks", accountId, HttpMethod.Post)
