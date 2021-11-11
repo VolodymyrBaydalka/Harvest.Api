@@ -25,12 +25,6 @@ namespace Harvest.Api
         public double Units { get; set; }
     }
 
-    public class ExpenseCategory : IdNameModel
-    {
-        public string UnitName { get; set; }
-        public decimal? UnitPrice { get; set; }
-    }
-
     public class Receipt
     {
         public Uri Url { get; set; }

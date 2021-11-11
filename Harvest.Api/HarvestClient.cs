@@ -533,8 +533,8 @@ namespace Harvest.Api
                 .SendAsync<Task>(_httpClient, cancellationToken);
         }
 
-        public async Task<Task> CreateTaskAsync(string name, bool? billableByDefault, decimal? defaultHourlyRate,
-            bool? isDefault, bool? isActive, long? accountId = null, CancellationToken cancellationToken = default)
+        public async Task<Task> CreateTaskAsync(string name, bool? billableByDefault = null, decimal? defaultHourlyRate = null,
+            bool? isDefault = null, bool? isActive = null, long? accountId = null, CancellationToken cancellationToken = default)
         {
             await RefreshTokenIsNeeded();
             return await SimpleRequestBuilder($"{harvestApiUrl}/tasks", accountId, HttpMethod.Post)
@@ -787,6 +787,56 @@ namespace Harvest.Api
                 .SendAsync<Expense>(_httpClient, cancellationToken);
         }
 
+        public async Task<ExpenseCategoryResponse> GetExpenseCategoriesAsync(bool? isActive = null,
+            DateTime? updatedSince = null, int? page = null, int? perPage = null, long? accountId = null, CancellationToken cancellationToken = default)
+        {
+            await RefreshTokenIsNeeded();
+            return await SimpleRequestBuilder($"{harvestApiUrl}/expense_categories", accountId)
+                .QueryPageSince(updatedSince, page, perPage)
+                .Query("is_active", isActive)
+                .SendAsync<ExpenseCategoryResponse>(_httpClient, cancellationToken);
+        }
+
+        public async Task<ExpenseCategoryDetail> GetExpenseCategoryAsync(long expenseCategoryId, long? accountId = null, CancellationToken cancellationToken = default)
+        {
+            await RefreshTokenIsNeeded();
+            return await SimpleRequestBuilder($"{harvestApiUrl}/expense_categories/{expenseCategoryId}", accountId)
+                .SendAsync<ExpenseCategoryDetail>(_httpClient, cancellationToken);
+        }
+		
+        public async Task<ExpenseCategoryDetail> CreateExpenseCategoriesAsync(string name, string unitName = null, decimal? unitPrice = null, bool? isActive = null,
+            long? accountId = null, CancellationToken cancellationToken = default)
+        {
+            await RefreshTokenIsNeeded();
+            return await SimpleRequestBuilder($"{harvestApiUrl}/expense_categories", accountId, HttpMethod.Post)
+                .UseJson()
+                .Body("name", name)
+                .Body("unit_name", unitName)
+                .Body("unit_price", unitPrice)
+                .Body("is_active", isActive)
+                .SendAsync<ExpenseCategoryDetail>(_httpClient, cancellationToken);
+        }
+
+        public async Task<ExpenseCategoryDetail> UpdateExpenseCategoriesAsync(long expenseCategoryId, string name = null, string unitName = null, decimal? unitPrice = null, bool? isActive = null,
+            long? accountId = null, CancellationToken cancellationToken = default)
+        {
+            await RefreshTokenIsNeeded();
+            return await SimpleRequestBuilder($"{harvestApiUrl}/expense_categories/{expenseCategoryId}", accountId, RequestBuilder.PatchMethod)
+                .UseJson()
+                .Body("name", name)
+                .Body("unit_name", unitName)
+                .Body("unit_price", unitPrice)
+                .Body("is_active", isActive)
+                .SendAsync<ExpenseCategoryDetail>(_httpClient, cancellationToken);
+        }
+
+        public async ThreadingTask DeleteExpenseCategoriesAsync(long expenseCategoryId, long? accountId = null, CancellationToken cancellationToken = default)
+        {
+            await RefreshTokenIsNeeded();
+            await SimpleRequestBuilder($"{harvestApiUrl}/expense_categories/{expenseCategoryId}", accountId, HttpMethod.Delete)
+                .SendAsync<ExpenseCategoryResponse>(_httpClient, cancellationToken);
+        }
+
         public async Task<InvoicesResponse> GetInvoicesAsync(long? clientId = null, long? projectId = null, InvoiceState? state = null, DateTime? from = null, DateTime? to = null,
             DateTime? updatedSince = null, int? page = null, int? perPage = null,
             long? accountId = null, CancellationToken cancellationToken = default)
@@ -1017,6 +1067,55 @@ namespace Harvest.Api
                 .Query("page", page)
                 .Query("per_page", perPage)
                 .SendAsync<TimeReportResponse>(_httpClient, cancellationToken);
+        }
+
+        //Expenses Report
+        public async Task<ExpenseReportResponse> GetClientsExpenseReportAsync(DateTime fromDate, DateTime toDate, int? page = null, int? perPage = null,
+            long? accountId = null, CancellationToken cancellationToken = default)
+        {
+            await RefreshTokenIsNeeded();
+            return await SimpleRequestBuilder($"{harvestApiUrl}/reports/expenses/clients", accountId)
+                .Query("from", fromDate)
+                .Query("to", toDate)
+                .Query("page", page)
+                .Query("per_page", perPage)
+                .SendAsync<ExpenseReportResponse>(_httpClient, cancellationToken);
+        }
+
+        public async Task<ExpenseReportResponse> GetProjectsExpenseReportAsync(DateTime fromDate, DateTime toDate, int? page = null, int? perPage = null,
+            long? accountId = null, CancellationToken cancellationToken = default)
+        {
+            await RefreshTokenIsNeeded();
+            return await SimpleRequestBuilder($"{harvestApiUrl}/reports/expenses/projects", accountId)
+                .Query("from", fromDate)
+                .Query("to", toDate)
+                .Query("page", page)
+                .Query("per_page", perPage)
+                .SendAsync<ExpenseReportResponse>(_httpClient, cancellationToken);
+        }
+
+        public async Task<ExpenseReportResponse> GetCategoryExpenseReportAsync(DateTime fromDate, DateTime toDate, int? page = null, int? perPage = null,
+            long? accountId = null, CancellationToken cancellationToken = default)
+        {
+            await RefreshTokenIsNeeded();
+            return await SimpleRequestBuilder($"{harvestApiUrl}/reports/expenses/categories", accountId)
+                .Query("from", fromDate)
+                .Query("to", toDate)
+                .Query("page", page)
+                .Query("per_page", perPage)
+                .SendAsync<ExpenseReportResponse>(_httpClient, cancellationToken);
+        }
+
+        public async Task<ExpenseReportResponse> GetTeamExpenseReportAsync(DateTime fromDate, DateTime toDate, int? page = null, int? perPage = null,
+            long? accountId = null, CancellationToken cancellationToken = default)
+        {
+            await RefreshTokenIsNeeded();
+            return await SimpleRequestBuilder($"{harvestApiUrl}/reports/expenses/team", accountId)
+                .Query("from", fromDate)
+                .Query("to", toDate)
+                .Query("page", page)
+                .Query("per_page", perPage)
+                .SendAsync<ExpenseReportResponse>(_httpClient, cancellationToken);
         }
         #endregion
 
