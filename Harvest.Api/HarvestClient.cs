@@ -1117,6 +1117,66 @@ namespace Harvest.Api
                 .Query("per_page", perPage)
                 .SendAsync<ExpenseReportResponse>(_httpClient, cancellationToken);
         }
+
+        public async Task<ContactsResponse> GetContactsAsync(long? clientId = null, DateTime? updatedSince = null, int? page = null, int? perPage = null,
+            long? accountId = null, CancellationToken cancellationToken = default)
+        {
+            await RefreshTokenIsNeeded();
+            return await SimpleRequestBuilder($"{harvestApiUrl}/contacts", accountId)
+                .Query("client_id", clientId)
+                .QueryPageSince(updatedSince, page, perPage)
+                .SendAsync<ContactsResponse>(_httpClient, cancellationToken);
+        }
+
+        public async Task<Contact> GetContactAsync(long? contactId, long? accountId = null, CancellationToken cancellationToken = default)
+        {
+            await RefreshTokenIsNeeded();
+            return await SimpleRequestBuilder($"{harvestApiUrl}/contacts/{contactId}", accountId)
+                .SendAsync<Contact>(_httpClient, cancellationToken);
+        }
+        
+        public async Task<Contact> CreateContactAsync(long clientId, string firstName, string title = null, string lastName = null,
+            string email = null, string phoneOffice = null, string phoneMobile = null, string fax = null,
+            long? accountId = null, CancellationToken cancellationToken = default)
+        {
+            await RefreshTokenIsNeeded();
+            return await SimpleRequestBuilder($"{harvestApiUrl}/contacts", accountId, HttpMethod.Post)
+                .Body("client_id", clientId)
+                .Body("title", title)
+                .Body("first_name", firstName)
+                .Body("last_name", lastName)
+                .Body("email", email)
+                .Body("phone_office", phoneOffice)
+                .Body("phone_mobile", phoneMobile)
+                .Body("fax", fax)
+                .SendAsync<Contact>(_httpClient, cancellationToken);
+        }
+        
+        public async Task<Contact> UpdateContactAsync(long contactId, long? clientId = null, string firstName = null, string title = null, string lastName = null,
+            string email = null, string phoneOffice = null, string phoneMobile = null, string fax = null,
+            long? accountId = null, CancellationToken cancellationToken = default)
+        {
+            await RefreshTokenIsNeeded();
+            return await SimpleRequestBuilder($"{harvestApiUrl}/contacts/{contactId}", accountId, RequestBuilder.PatchMethod)
+                .Body("client_id", clientId)
+                .Body("title", title)
+                .Body("first_name", firstName)
+                .Body("last_name", lastName)
+                .Body("email", email)
+                .Body("phone_office", phoneOffice)
+                .Body("phone_mobile", phoneMobile)
+                .Body("fax", fax)
+                .SendAsync<Contact>(_httpClient, cancellationToken);
+        }
+        
+        public async ThreadingTask DeleteContactAsync(long contactId,
+            long? accountId = null, CancellationToken cancellationToken = default)
+        {
+            await RefreshTokenIsNeeded();
+            await SimpleRequestBuilder($"{harvestApiUrl}/contacts/{contactId}", accountId, HttpMethod.Delete)
+                .SendAsync<Client>(_httpClient, cancellationToken);
+        }
+        
         #endregion
 
         #region Implementation
