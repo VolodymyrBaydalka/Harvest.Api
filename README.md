@@ -1,4 +1,3 @@
-[![zv MyGet Build Status](https://www.myget.org/BuildSource/Badge/zv?identifier=3b4888a9-f4db-434e-baac-7b3518d0f7af)](https://www.myget.org/Package/Details/zv?packageType=nuget&packageId=Harvest.Api)
 [![NuGet](https://img.shields.io/nuget/v/Harvest.Api.svg?maxAge=43200)](https://www.nuget.org/packages/Harvest.Api)
 
 # Harvest.Api
