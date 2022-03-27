@@ -18,7 +18,7 @@ namespace Harvest.Api
         public bool IsActive { get; set; }
         public int? WeeklyCapacity { get; set; }
         public decimal? DefaultHourlyRate { get; set; }
-        public decimal? CostTate { get; set; }
+        public decimal? CostRate { get; set; }
         public string[] Roles { get; set; }
         public string AvatarUrl { get; set; }
     }
