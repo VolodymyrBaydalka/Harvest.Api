@@ -1000,17 +1000,16 @@ namespace Harvest.Api
                 .SendAsync<InvoicePaymentsReponse>(_httpClient, cancellationToken);
         }
 
-        public async Task<InvoiceItemCategory> CreateInvoicePaymentAsync(long invoiceId,
-            decimal amount, DateTime? paidAt = null, DateTime? paidDate = null, string notes = null,
+        public async Task<InvoicePayment> CreateInvoicePaymentAsync(long invoiceId,
+            decimal amount, DateTime paidAt, bool dateOnly, string notes = null,
             long? accountId = null, CancellationToken cancellationToken = default)
         {
             await RefreshTokenIsNeeded();
             return await SimpleRequestBuilder($"{harvestApiUrl}/invoices/{invoiceId}/payments", accountId, HttpMethod.Post)
                 .Body("amount", amount)
-                .Body("paid_at", paidAt)
-                .Body("paid_date", paidDate)
+                .Body(dateOnly ? "paid_date" : "paid_at", paidAt, dateOnly)
                 .Body("notes", notes)
-                .SendAsync<InvoiceItemCategory>(_httpClient, cancellationToken);
+                .SendAsync<InvoicePayment>(_httpClient, cancellationToken);
         }
 
         public async ThreadingTask DeleteInvoicePaymentAsync(long invoiceId, long paymentId,
