@@ -13,7 +13,7 @@ namespace Harvest.Api
         public string RecordedByEmail { get; set; } // The email of the person who recorded the payment.
         public string Notes { get; set; } // Any notes associated with the payment.
         public string TransactionId { get; set; } // Either the card authorization or PayPal transaction ID.
-        public IdNameModel PaymentGateway { get; set; } // The payment gateway id and name used to process the payment.
+        public NullableIdNameModel PaymentGateway { get; set; } // The payment gateway id and name used to process the payment.
     }
 
     public class InvoicePaymentsReponse : PagedList
