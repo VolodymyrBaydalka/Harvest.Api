@@ -11,4 +11,11 @@ namespace Harvest.Api
         public long Id { get; set; }
         public string Name { get; set; }
     }
+
+    [DebuggerDisplay("{Name}")]
+    public class NullableIdNameModel
+    {
+        public long? Id { get; set; }
+        public string Name { get; set; }
+    }
 }
