@@ -114,7 +114,7 @@ namespace Harvest.Api
             }
 
             if (result == null)
-                throw new ArgumentException("Failed to authorize",  nameof(callbackUri));
+                throw new ArgumentException("Failed to authorize", nameof(callbackUri));
 
             Authorize(result.AccessToken, result.RefreshToken, result.ExpiresIn);
 
@@ -472,7 +472,7 @@ namespace Harvest.Api
                 .Body("cost_budget_include_expenses", costBudgetIncludeExpenses)
                 .Body("fee", fee)
                 .Body("notes", notes)
-                .Body("starts_on", startsOn, truncateTime:true)
+                .Body("starts_on", startsOn, truncateTime: true)
                 .Body("ends_on", endsOn, truncateTime: true)
                 .SendAsync<Project>(_httpClient, cancellationToken);
         }
@@ -803,7 +803,7 @@ namespace Harvest.Api
             return await SimpleRequestBuilder($"{harvestApiUrl}/expense_categories/{expenseCategoryId}", accountId)
                 .SendAsync<ExpenseCategoryDetail>(_httpClient, cancellationToken);
         }
-		
+
         public async Task<ExpenseCategoryDetail> CreateExpenseCategoriesAsync(string name, string unitName = null, decimal? unitPrice = null, bool? isActive = null,
             long? accountId = null, CancellationToken cancellationToken = default)
         {
@@ -852,8 +852,8 @@ namespace Harvest.Api
                 .SendAsync<InvoicesResponse>(_httpClient, cancellationToken);
         }
 
-        public async Task<Invoice> CreateFreeFormInvoiceAsync(long clientId, long? retainerId = null, long? estimateId = null, string number = null, string purchaseOrder = null, 
-            decimal? tax = null, decimal? tax2 = null, decimal? discount = null, string subject = null, string notes = null, string currency = null, DateTime? issueDate = null, 
+        public async Task<Invoice> CreateFreeFormInvoiceAsync(long clientId, long? retainerId = null, long? estimateId = null, string number = null, string purchaseOrder = null,
+            decimal? tax = null, decimal? tax2 = null, decimal? discount = null, string subject = null, string notes = null, string currency = null, DateTime? issueDate = null,
             DateTime? dueDate = null, string paymentTerm = null, LineItemParam[] lineItemParams = null,
             long? accountId = null, CancellationToken cancellationToken = default)
         {
@@ -880,7 +880,7 @@ namespace Harvest.Api
 
         public async Task<Invoice> UpdateInvoiceAsync(long invoiceId,
             long? clientId = null, long? retainerId = null, long? estimateId = null,
-            string number = null, string purchaseOrder = null, 
+            string number = null, string purchaseOrder = null,
             decimal? tax = null, decimal? tax2 = null, decimal? discount = null,
             string subject = null, string notes = null, string currency = null,
             DateTime? issueDate = null, DateTime? dueDate = null, string paymentTerm = null,
@@ -911,7 +911,7 @@ namespace Harvest.Api
 
         public async Task<Invoice> CreateInvoiceItemsAsync(long invoiceId, LineItem[] lineItems, long? accountId = null, CancellationToken cancellationToken = default)
         {
-            foreach(LineItem lineItem in lineItems)
+            foreach (LineItem lineItem in lineItems)
             {
                 lineItem.Id = null;
                 lineItem._Destory = null;
@@ -936,7 +936,7 @@ namespace Harvest.Api
             }
             return await UpdateInvoiceItemsAsync(invoiceId, lineItems, accountId, cancellationToken);
         }
-        
+
 
         public async Task<Invoice> GetInvoiceAsync(string invoiceId, long? clientId = null, long? accountId = null, CancellationToken cancellationToken = default)
         {
@@ -1117,6 +1117,18 @@ namespace Harvest.Api
                 .SendAsync<ExpenseReportResponse>(_httpClient, cancellationToken);
         }
 
+        public async Task<UninvoicedReportResponse> GetUninvoicedReportAsync(DateTime fromDate, DateTime toDate, int? page = null, int? perPage = null,
+            long? accountId = null, CancellationToken cancellationToken = default)
+        {
+            await RefreshTokenIsNeeded();
+            return await SimpleRequestBuilder($"{harvestApiUrl}/reports/uninvoiced", accountId)
+                .Query("from", fromDate)
+                .Query("to", toDate)
+                .Query("page", page)
+                .Query("per_page", perPage)
+                .SendAsync<UninvoicedReportResponse>(_httpClient, cancellationToken);
+        }
+
         public async Task<ContactsResponse> GetContactsAsync(long? clientId = null, DateTime? updatedSince = null, int? page = null, int? perPage = null,
             long? accountId = null, CancellationToken cancellationToken = default)
         {
@@ -1133,7 +1145,7 @@ namespace Harvest.Api
             return await SimpleRequestBuilder($"{harvestApiUrl}/contacts/{contactId}", accountId)
                 .SendAsync<Contact>(_httpClient, cancellationToken);
         }
-        
+
         public async Task<Contact> CreateContactAsync(long clientId, string firstName, string title = null, string lastName = null,
             string email = null, string phoneOffice = null, string phoneMobile = null, string fax = null,
             long? accountId = null, CancellationToken cancellationToken = default)
@@ -1150,7 +1162,7 @@ namespace Harvest.Api
                 .Body("fax", fax)
                 .SendAsync<Contact>(_httpClient, cancellationToken);
         }
-        
+
         public async Task<Contact> UpdateContactAsync(long contactId, long? clientId = null, string firstName = null, string title = null, string lastName = null,
             string email = null, string phoneOffice = null, string phoneMobile = null, string fax = null,
             long? accountId = null, CancellationToken cancellationToken = default)
@@ -1167,7 +1179,7 @@ namespace Harvest.Api
                 .Body("fax", fax)
                 .SendAsync<Contact>(_httpClient, cancellationToken);
         }
-        
+
         public async ThreadingTask DeleteContactAsync(long contactId,
             long? accountId = null, CancellationToken cancellationToken = default)
         {
@@ -1175,7 +1187,7 @@ namespace Harvest.Api
             await SimpleRequestBuilder($"{harvestApiUrl}/contacts/{contactId}", accountId, HttpMethod.Delete)
                 .SendAsync<Client>(_httpClient, cancellationToken);
         }
-        
+
         #endregion
 
         #region Implementation
