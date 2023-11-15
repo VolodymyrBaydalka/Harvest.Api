@@ -10,7 +10,7 @@ namespace Harvest.Api
         public LineItem[] LineItems { get; set; } // Array of invoice line items.
         public IdNameModel Estimate { get; set; } // An object containing the associated estimate’s id.
         public IdNameModel Retainer { get; set; } // An object containing the associated retainer’s id.
-        public IdNameModel Creator { get; set; } // An object containing the id and name of the person that created the invoice.
+        public NullableIdNameModel Creator { get; set; } // An object containing the id and name of the person that created the invoice.
         public string ClientKey { get; set; } // Used to build a URL to the public web invoice for your client:https://{ACCOUNT_SUBDOMAIN}.harvestapp.com/client/invoices/abc123456
         public string Number { get; set; } // If no value is set, the number will be automatically generated.
         public string PurchaseOrder { get; set; } // The purchase order number.
