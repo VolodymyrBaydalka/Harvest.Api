@@ -1116,6 +1116,17 @@ namespace Harvest.Api
                 .Query("per_page", perPage)
                 .SendAsync<ExpenseReportResponse>(_httpClient, cancellationToken);
         }
+		
+		public async Task<ProjectBudgetReportResponse> GetProjectBudgetReportAsync(bool? isActive = null, int? page = null, int? perPage = null,
+            long? accountId = null, CancellationToken cancellationToken = default)
+        {
+            await RefreshTokenIsNeeded();
+            return await SimpleRequestBuilder($"{harvestApiUrl}/reports/project_budget", accountId)
+                .Query("page", page)
+                .Query("per_page", perPage)
+                .Query("is_active", isActive)
+                .SendAsync<ProjectBudgetReportResponse>(_httpClient, cancellationToken);
+        }
 
         public async Task<UninvoicedReportResponse> GetUninvoicedReportAsync(DateTime fromDate, DateTime toDate, int? page = null, int? perPage = null,
             long? accountId = null, CancellationToken cancellationToken = default)
