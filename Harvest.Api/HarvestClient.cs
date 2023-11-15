@@ -606,10 +606,10 @@ namespace Harvest.Api
                 .SendAsync<UserRatesResponse>(_httpClient, cancellationToken);
         }
 
-        public async Task<UserRate> GetUserBillableRateAsync(long userId, long costRateId, long? accountId = null, CancellationToken cancellationToken = default)
+        public async Task<UserRate> GetUserBillableRateAsync(long userId, long billableRateId, long? accountId = null, CancellationToken cancellationToken = default)
         {
             await RefreshTokenIsNeeded();
-            return await SimpleRequestBuilder($"{harvestApiUrl}/users/{userId}/billable_rates/{costRateId}", accountId)
+            return await SimpleRequestBuilder($"{harvestApiUrl}/users/{userId}/billable_rates/{billableRateId}", accountId)
                 .SendAsync<UserRate>(_httpClient, cancellationToken);
         }
 
