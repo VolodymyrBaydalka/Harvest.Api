@@ -623,6 +623,23 @@ namespace Harvest.Api
                 .SendAsync<UserRate>(_httpClient, cancellationToken);
         }
 
+        public async Task<TeammatesResponse> GetUserTeammatesAsync(long userId, int? page = null, int? perPage = null, long? accountId = null, CancellationToken cancellationToken = default)
+        {
+            await RefreshTokenIsNeeded();
+            return await SimpleRequestBuilder($"{harvestApiUrl}/users/{userId}/teammates", accountId)
+                .QueryPageSince(page: page, perPage: perPage)
+                .SendAsync<TeammatesResponse>(_httpClient, cancellationToken);
+        }
+
+        public async Task<Teammate[]> UpdateUserTeammatesAsync(long userId, long[] teammateIds,
+            long? accountId = null, CancellationToken cancellationToken = default)
+        {
+            await RefreshTokenIsNeeded();
+            return await SimpleRequestBuilder($"{harvestApiUrl}/users/{userId}/teammates", accountId, HttpMethod.Post)
+                .Body("teammate_ids", teammateIds)
+                .SendAsync<Teammate[]>(_httpClient, cancellationToken);
+        }
+		
         public async Task<RolesResponse> GetRolesAsync(DateTime? updatedSince = null, int? page = null, int? perPage = null,
             long? accountId = null, CancellationToken cancellationToken = default)
         {
