@@ -606,10 +606,10 @@ namespace Harvest.Api
                 .SendAsync<UserRatesResponse>(_httpClient, cancellationToken);
         }
 
-        public async Task<UserRate> GetUserBillableRateAsync(long userId, long costRateId, long? accountId = null, CancellationToken cancellationToken = default)
+        public async Task<UserRate> GetUserBillableRateAsync(long userId, long billableRateId, long? accountId = null, CancellationToken cancellationToken = default)
         {
             await RefreshTokenIsNeeded();
-            return await SimpleRequestBuilder($"{harvestApiUrl}/users/{userId}/billable_rates/{costRateId}", accountId)
+            return await SimpleRequestBuilder($"{harvestApiUrl}/users/{userId}/billable_rates/{billableRateId}", accountId)
                 .SendAsync<UserRate>(_httpClient, cancellationToken);
         }
 
@@ -623,6 +623,23 @@ namespace Harvest.Api
                 .SendAsync<UserRate>(_httpClient, cancellationToken);
         }
 
+        public async Task<TeammatesResponse> GetUserTeammatesAsync(long userId, int? page = null, int? perPage = null, long? accountId = null, CancellationToken cancellationToken = default)
+        {
+            await RefreshTokenIsNeeded();
+            return await SimpleRequestBuilder($"{harvestApiUrl}/users/{userId}/teammates", accountId)
+                .QueryPageSince(page: page, perPage: perPage)
+                .SendAsync<TeammatesResponse>(_httpClient, cancellationToken);
+        }
+
+        public async Task<Teammate[]> UpdateUserTeammatesAsync(long userId, long[] teammateIds,
+            long? accountId = null, CancellationToken cancellationToken = default)
+        {
+            await RefreshTokenIsNeeded();
+            return await SimpleRequestBuilder($"{harvestApiUrl}/users/{userId}/teammates", accountId, HttpMethod.Post)
+                .Body("teammate_ids", teammateIds)
+                .SendAsync<Teammate[]>(_httpClient, cancellationToken);
+        }
+		
         public async Task<RolesResponse> GetRolesAsync(DateTime? updatedSince = null, int? page = null, int? perPage = null,
             long? accountId = null, CancellationToken cancellationToken = default)
         {
@@ -1115,6 +1132,17 @@ namespace Harvest.Api
                 .Query("page", page)
                 .Query("per_page", perPage)
                 .SendAsync<ExpenseReportResponse>(_httpClient, cancellationToken);
+        }
+		
+		public async Task<ProjectBudgetReportResponse> GetProjectBudgetReportAsync(bool? isActive = null, int? page = null, int? perPage = null,
+            long? accountId = null, CancellationToken cancellationToken = default)
+        {
+            await RefreshTokenIsNeeded();
+            return await SimpleRequestBuilder($"{harvestApiUrl}/reports/project_budget", accountId)
+                .Query("page", page)
+                .Query("per_page", perPage)
+                .Query("is_active", isActive)
+                .SendAsync<ProjectBudgetReportResponse>(_httpClient, cancellationToken);
         }
 
         public async Task<UninvoicedReportResponse> GetUninvoicedReportAsync(DateTime fromDate, DateTime toDate, int? page = null, int? perPage = null,
